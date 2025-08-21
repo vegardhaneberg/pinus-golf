@@ -30,6 +30,28 @@ export async function getAllPlayers(): Promise<Player[]> {
   return data ?? [];
 }
 
+export async function getRoundWithPlayerData(
+  id: number
+): Promise<CompleteRoundWithPlayer> {
+  const { data, error } = await supabase
+    .from("CompleteRound")
+    .select(
+      `
+      id, created_at, first_hole, second_hole, third_hole, fourth_hole, fifth_hole, player_id,
+      player:player_id ( id, name )
+    `
+    )
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    console.error("Error fetching rounds with player:", error.message);
+    throw new Error("Could not find round");
+  }
+
+  return data;
+}
+
 export async function getAllRoundsWithPlayerData(): Promise<
   CompleteRoundWithPlayer[]
 > {
@@ -105,15 +127,4 @@ export async function saveRoundAttempt(
   }
 
   return true;
-}
-
-export function getNumberOfUniquePlayers(
-  rounds: CompleteRoundWithPlayer[]
-): number {
-  console.log(rounds);
-
-  const uniquePlayers = new Set(rounds.map((r) => r.player?.id)).size;
-  console.log("Unique players", uniquePlayers);
-
-  return uniquePlayers;
 }

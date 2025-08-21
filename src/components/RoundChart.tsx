@@ -9,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 import type { CompleteRoundWithPlayer } from "../supabase/supabaseClient";
+import { COURSE } from "../data/course";
 
 interface RoundChartProps {
   par?: number;
@@ -34,7 +35,8 @@ const RoundChart: React.FC<RoundChartProps> = ({ round, par = 3 }) => {
       runningScore += score; // sum up to current hole
       const parToHere = label * parPerHole; // par accumulated to this hole
       const diff = runningScore - parToHere; // cumulative diff vs par
-      return { hole: label, score, diff };
+
+      return { hole: COURSE.holes[label - 1]?.name, score, diff };
     });
   };
 
@@ -67,12 +69,6 @@ const RoundChart: React.FC<RoundChartProps> = ({ round, par = 3 }) => {
               tickLine={false}
               axisLine={{ stroke: "#86efac" }}
               tick={{ fill: "#14532d" }}
-              label={{
-                value: "Hull",
-                position: "insideBottom",
-                offset: -2,
-                fill: "#14532d",
-              }}
             />
 
             <YAxis
@@ -82,13 +78,6 @@ const RoundChart: React.FC<RoundChartProps> = ({ round, par = 3 }) => {
               tickLine={false}
               axisLine={{ stroke: "#86efac" }}
               tick={{ fill: "#14532d" }}
-              label={{
-                value: "Score vs. par",
-                angle: -90,
-                position: "insideLeft",
-                offset: 10,
-                fill: "#14532d",
-              }}
             />
             {/* Zero line (par) */}
             <ReferenceLine y={0} stroke="#16a34a" strokeDasharray="4 4" />
