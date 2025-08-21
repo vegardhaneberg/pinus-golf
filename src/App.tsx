@@ -12,6 +12,7 @@ import {
   type CompleteRoundWithPlayer,
 } from "./supabase/supabaseClient";
 import { COURSE } from "./data/course";
+import RoundChart from "./components/RoundChart";
 
 function App() {
   const [completeRounds, setCompleteRounds] = useState<
@@ -96,6 +97,14 @@ function App() {
             <RecentResults rounds={completeRounds.slice(0, 5)} />
             <TopScores rounds={getFiveBestRounds(completeRounds)} />
           </div>
+          {completeRounds.length > 0 && (
+            <div>
+              <RoundChart
+                par={3}
+                round={completeRounds.find((r) => r.id === 29)!}
+              />
+            </div>
+          )}
         </div>
 
         {/* Statistics Footer */}
