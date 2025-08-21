@@ -1,23 +1,10 @@
-export interface Player {
-  id: string;
-  name: string;
-}
+import type { Player } from "../supabase/supabaseClient";
 
 export interface HoleScore {
   name: string;
   hole: number;
   par: number;
   score: number;
-}
-
-export interface Round {
-  id: string;
-  playerId: string;
-  playerName: string;
-  date: string;
-  scores: HoleScore[];
-  totalScore: number;
-  totalPar: number;
 }
 
 export interface Course {
@@ -28,4 +15,13 @@ export interface Course {
     par: number;
     description: string | undefined;
   }>;
+}
+
+export interface RoundAttempt {
+  hole1: number;
+  hole2: number;
+  hole3: number;
+  hole4: number;
+  hole5: number;
+  player?: Player;
 }

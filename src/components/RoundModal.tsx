@@ -1,62 +1,59 @@
-import React, { useState } from "react";
-import { X, Plus } from "lucide-react";
-import type { Round, HoleScore, Course } from "../types";
-import { calculateTotal, calculateTotalPar } from "../utils/scoreUtils";
+import React, { useEffect, useState } from "react";
+import { X, Plus, ChevronDown } from "lucide-react";
+import type { Course, RoundAttempt } from "../types/types";
+import { calculateTotal } from "../utils/scoreUtils";
+import {
+  getAllPlayers,
+  saveRoundAttempt,
+  type Player,
+} from "../supabase/supabaseClient";
 
 interface RoundModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (round: Round) => void;
   course: Course;
 }
 
-const RoundModal: React.FC<RoundModalProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-  course,
-}) => {
-  const [playerName, setPlayerName] = useState("");
-  const [scores, setScores] = useState<HoleScore[]>(
-    course.holes.map((hole) => ({
-      name: hole.name,
-      hole: hole.number,
-      par: hole.par,
-      score: hole.par,
-    }))
-  );
+const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+  const [scores, setScores] = useState<number[]>([3, 3, 3, 3, 3]);
+  const [players, setPlayers] = useState<Player[]>();
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const supabasePlayers = await getAllPlayers();
+      setPlayers(supabasePlayers);
+    })();
+  }, []);
 
   const handleScoreChange = (holeIndex: number, newScore: number) => {
     const updatedScores = [...scores];
-    updatedScores[holeIndex].score = Math.max(1, newScore);
+    updatedScores[holeIndex] = Math.max(1, newScore);
     setScores(updatedScores);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!playerName.trim()) return;
+    if (!selectedPlayer) return;
 
-    const round: Round = {
-      id: Date.now().toString(),
-      playerId: Date.now().toString(),
-      playerName: playerName.trim(),
-      date: new Date().toISOString(),
-      scores,
-      totalScore: calculateTotal(scores),
-      totalPar: calculateTotalPar(scores),
+    const roundAttempt: RoundAttempt = {
+      hole1: scores[0],
+      hole2: scores[1],
+      hole3: scores[2],
+      hole4: scores[3],
+      hole5: scores[4],
+      player: selectedPlayer!,
     };
 
-    onSave(round);
+    await saveRoundAttempt(roundAttempt);
+    resetModal();
+  };
 
-    // Reset form
-    setPlayerName("");
-    setScores(
-      course.holes.map((hole) => ({
-        hole: hole.number,
-        par: hole.par,
-        score: hole.par,
-      }))
-    );
+  const resetModal = () => {
+    setSelectedPlayer(null);
+    setScores([3, 3, 3, 3, 3]);
+    setDropDownOpen(false);
     onClose();
   };
 
@@ -71,7 +68,7 @@ const RoundModal: React.FC<RoundModalProps> = ({
               Registrer ny runde
             </h2>
             <button
-              onClick={onClose}
+              onClick={resetModal}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <X className="w-6 h-6" />
@@ -85,49 +82,69 @@ const RoundModal: React.FC<RoundModalProps> = ({
               htmlFor="playerName"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Player Name
+              Spiller
             </label>
-            <input
-              type="text"
-              id="playerName"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Enter player name"
-              required
-            />
+            <div className="relative inline-block text-left">
+              <button
+                onClick={() => setDropDownOpen((prev) => !prev)}
+                className="inline-flex w-48 justify-between items-center rounded-lg bg-green-200 px-4 py-2 text-sm font-medium text-green-900 shadow hover:bg-green-300 focus:outline-none"
+              >
+                {selectedPlayer?.name || "Velg spiller"}
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </button>
+            </div>
+            {dropDownOpen && (
+              <div className="absolute mt-2 w-48 rounded-lg bg-green-100 shadow-lg ring-1 ring-black ring-opacity-5">
+                <ul className="py-1">
+                  {players &&
+                    players.map((player) => (
+                      <li key={player.id}>
+                        <button
+                          onClick={() => {
+                            setSelectedPlayer(player);
+                            setDropDownOpen(false);
+                          }}
+                          className="block w-full text-left px-4 py-2 text-sm text-green-900 hover:bg-green-200"
+                        >
+                          {player.name}
+                        </button>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Hole Scores
+              Resultater
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {scores.map((holeScore, index) => (
-                <div key={holeScore.hole} className="bg-gray-50 p-4 rounded-lg">
+              {course.holes.map((hole, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-green-800">
-                      {holeScore.name}
+                      {hole.name}
                     </span>
                     <span className="text-sm text-gray-600">
-                      Par {holeScore.par}
+                      Par {hole.par}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() =>
-                        handleScoreChange(index, holeScore.score - 1)
+                        handleScoreChange(index, scores[index] - 1)
                       }
                       className="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center transition-colors"
-                      disabled={holeScore.score <= 1}
+                      disabled={scores[index] <= 1}
                     >
                       -
                     </button>
                     <div className="flex-1 text-center">
                       <input
                         type="number"
-                        value={holeScore.score}
+                        value={scores[index]}
                         onChange={(e) =>
                           handleScoreChange(
                             index,
@@ -142,7 +159,7 @@ const RoundModal: React.FC<RoundModalProps> = ({
                     <button
                       type="button"
                       onClick={() =>
-                        handleScoreChange(index, holeScore.score + 1)
+                        handleScoreChange(index, scores[index] + 1)
                       }
                       className="w-8 h-8 bg-green-100 hover:bg-green-200 text-green-600 rounded-full flex items-center justify-center transition-colors"
                     >
@@ -156,7 +173,7 @@ const RoundModal: React.FC<RoundModalProps> = ({
 
           <div className="bg-green-50 p-4 rounded-lg mb-6">
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-green-800">Total Score:</span>
+              <span className="font-semibold text-green-800">Totalt:</span>
               <span className="text-2xl font-bold text-green-800">
                 {calculateTotal(scores)}
               </span>
@@ -166,17 +183,17 @@ const RoundModal: React.FC<RoundModalProps> = ({
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={onClose}
+              onClick={resetModal}
               className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
-              Cancel
+              Avbryt
             </button>
             <button
               type="submit"
               className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" />
-              Register Round
+              Register
             </button>
           </div>
         </form>

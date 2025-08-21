@@ -1,10 +1,13 @@
 import React from "react";
 import { Calendar, User } from "lucide-react";
-import type { Round } from "../types";
 import { formatScoreRelativeToPar } from "../utils/scoreUtils";
+import {
+  calculateRoundScore,
+  type CompleteRoundWithPlayer,
+} from "../supabase/supabaseClient";
 
 interface RecentResultsProps {
-  rounds: Round[];
+  rounds: CompleteRoundWithPlayer[];
 }
 
 const RecentResults: React.FC<RecentResultsProps> = ({ rounds }) => {
@@ -26,7 +29,7 @@ const RecentResults: React.FC<RecentResultsProps> = ({ rounds }) => {
       {rounds.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
           <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-          <p>No rounds recorded yet</p>
+          <p>Ingen registrerte runder</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -43,21 +46,21 @@ const RecentResults: React.FC<RecentResultsProps> = ({ rounds }) => {
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-gray-500" />
                     <span className="font-semibold text-gray-800">
-                      {round.playerName}
+                      {round.player?.name ?? "ukjent spiller"}
                     </span>
                   </div>
                   <div className="text-sm text-gray-600">
-                    {formatDate(round.date)}
+                    {formatDate(round.created_at)}
                   </div>
                 </div>
               </div>
 
               <div className="text-right">
                 <div className="text-2xl font-bold text-green-800">
-                  {round.totalScore}
+                  {calculateRoundScore(round)}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {formatScoreRelativeToPar(round.totalScore, round.totalPar)}
+                  {formatScoreRelativeToPar(calculateRoundScore(round), 15)}
                 </div>
               </div>
             </div>

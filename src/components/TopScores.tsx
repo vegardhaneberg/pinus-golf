@@ -1,10 +1,13 @@
 import React from "react";
 import { Trophy, Medal, Award } from "lucide-react";
-import type { Round } from "../types";
 import { formatScoreRelativeToPar } from "../utils/scoreUtils";
+import {
+  calculateRoundScore,
+  type CompleteRoundWithPlayer,
+} from "../supabase/supabaseClient";
 
 interface TopScoresProps {
-  rounds: Round[];
+  rounds: CompleteRoundWithPlayer[];
 }
 
 const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
@@ -63,10 +66,10 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
                 {getRankIcon(index + 1)}
                 <div>
                   <div className="font-semibold text-gray-800">
-                    {round.playerName}
+                    {round.player?.name ?? "feil ved lasting av spiller"}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {new Date(round.date).toLocaleDateString("en-US", {
+                    {new Date(round.created_at).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                     })}
@@ -76,10 +79,10 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
 
               <div className="text-right">
                 <div className="text-2xl font-bold text-green-800">
-                  {round.totalScore}
+                  {calculateRoundScore(round)}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {formatScoreRelativeToPar(round.totalScore, round.totalPar)}
+                  {formatScoreRelativeToPar(calculateRoundScore(round), 15)}
                 </div>
               </div>
             </div>
