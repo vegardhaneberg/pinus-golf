@@ -3,20 +3,20 @@ import { Calendar, User } from "lucide-react";
 import { formatScoreRelativeToPar } from "../utils/scoreUtils";
 import {
   calculateRoundScore,
+  formatDate,
   type CompleteRoundWithPlayer,
 } from "../supabase/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 interface RecentResultsProps {
   rounds: CompleteRoundWithPlayer[];
 }
 
 const RecentResults: React.FC<RecentResultsProps> = ({ rounds }) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+  const navigate = useNavigate();
+
+  const handleOnClick = (round: CompleteRoundWithPlayer) => {
+    navigate(`/tournament/${round.id}`);
   };
 
   return (
@@ -36,7 +36,8 @@ const RecentResults: React.FC<RecentResultsProps> = ({ rounds }) => {
           {rounds.map((round, index) => (
             <div
               key={round.id}
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              onClick={() => handleOnClick(round)}
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center font-semibold text-sm">

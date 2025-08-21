@@ -51,10 +51,10 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
   };
 
   const resetModal = () => {
-    setSelectedPlayer(null);
+    onClose();
     setScores([3, 3, 3, 3, 3]);
     setDropDownOpen(false);
-    onClose();
+    setSelectedPlayer(null);
   };
 
   if (!isOpen) return null;

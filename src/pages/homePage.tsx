@@ -38,7 +38,7 @@ const HomePage: React.FC = () => {
         <header className="bg-white shadow-sm border-b border-green-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="cursor-pointer">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
                     <MapPin className="w-6 h-6 text-white" />

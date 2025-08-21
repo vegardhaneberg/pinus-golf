@@ -5,12 +5,14 @@ import {
   calculateRoundScore,
   type CompleteRoundWithPlayer,
 } from "../supabase/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 interface TopScoresProps {
   rounds: CompleteRoundWithPlayer[];
 }
 
 const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
+  const navigate = useNavigate();
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -41,6 +43,10 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
     }
   };
 
+  const navigateToTournament = (round: CompleteRoundWithPlayer) => {
+    navigate(`/tournament/${round.id}`);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center gap-2">
@@ -61,6 +67,7 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
               className={`flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors ${getRankBorder(
                 index + 1
               )}`}
+              onClick={() => navigateToTournament(round)}
             >
               <div className="flex items-center gap-3">
                 {getRankIcon(index + 1)}

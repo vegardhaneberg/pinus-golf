@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
+  calculateRoundScore,
   type CompleteRoundWithPlayer,
+  formatDate,
   getRoundWithPlayerData,
 } from "../supabase/supabaseClient";
 import { MapPin } from "lucide-react";
@@ -11,8 +13,8 @@ import RoundChart from "../components/RoundChart";
 const TournamentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const roundId = Number(id);
-
   const [round, setRound] = useState<CompleteRoundWithPlayer>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -21,13 +23,17 @@ const TournamentPage: React.FC = () => {
     })();
   }, [roundId]);
 
+  const navigateHome = () => {
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-green-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="cursor-pointer" onClick={navigateHome}>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
                   <MapPin className="w-6 h-6 text-white" />
@@ -44,20 +50,26 @@ const TournamentPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Course Info */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold text-green-800 mb-4">
-            Pinus Golfbane
-          </h2>
+      {round && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 className="text-xl font-bold text-green-800 mb-4">
+              {round.player?.name ?? "Ukjent"}
+            </h2>
+            <p className="font-semibold text-gray-800 mb-4">
+              {formatDate(round.created_at) +
+                " spilte " +
+                round.player?.name +
+                " til "}
+              <span className="text-green-600">
+                {calculateRoundScore(round) + " slag"}
+              </span>
+            </p>
 
-          {round && (
-            <div>
-              <RoundChart par={3} round={round} />
-            </div>
-          )}
+            {round && <RoundChart par={3} round={round} />}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

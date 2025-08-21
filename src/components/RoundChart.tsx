@@ -47,16 +47,7 @@ const RoundChart: React.FC<RoundChartProps> = ({ round, par = 3 }) => {
 
   return (
     <div className="w-full rounded-2xl bg-green-50/70 border border-green-200 p-4 sm:p-6 shadow-sm ">
-      <div className="flex items-baseline justify-between mb-4">
-        <h3 className="text-lg sm:text-xl font-semibold text-green-900">
-          {round.player?.name ?? "Spiller"} - runde #{round.id}
-        </h3>
-        <span className="text-xs sm:text-sm text-green-800/80">
-          {new Date(round.created_at).toLocaleString()}
-        </span>
-      </div>
-
-      {/* Height adapts with breakpoints; ResponsiveContainer fills parent */}
+      <div className="flex items-baseline justify-between mb-4"></div>
       <div className="h-64 sm:h-72 md:h-80 lg:h-96">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
