@@ -12,7 +12,6 @@ import RecentResults from "../components/RecentResults";
 import TopScores from "../components/TopScores";
 import RoundModal from "../components/RoundModal";
 import { useNavigate } from "react-router-dom";
-import type { Hole } from "../types/types";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -79,7 +78,7 @@ const HomePage: React.FC = () => {
               {COURSE.holes.map((hole) => (
                 <div
                   key={hole.number}
-                  className="bg-green-50 p-4 rounded-lg text-center"
+                  className="bg-green-50 p-4 rounded-lg text-center cursor-pointer hover:bg-green-100 transition duration-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                   onClick={() => navigateToHole(hole.number)}
                 >
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">

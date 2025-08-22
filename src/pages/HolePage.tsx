@@ -37,7 +37,7 @@ const HoleStatsPage: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-lg p-8 text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            Invalid Hole Number
+            Ops en feil oppstod!
           </h1>
           <p className="text-gray-600 mb-6">
             Her skjedde det en feil. Fant ingen hull med id {id}
@@ -47,7 +47,7 @@ const HoleStatsPage: React.FC = () => {
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 mx-auto transition-colors"
           >
             <Home className="w-5 h-5" />
-            Back to Home
+            Tilbake
           </button>
         </div>
       </div>
@@ -130,7 +130,7 @@ const HoleStatsPage: React.FC = () => {
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => navigate("/")}
-                  className="p-2 hover:bg-green-50 rounded-full transition-colors"
+                  className="p-2 hover:bg-green-100 rounded-full transition-colors"
                 >
                   <ArrowLeft className="w-6 h-6 text-green-600" />
                 </button>

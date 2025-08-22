@@ -6,7 +6,7 @@ import {
   formatDate,
   getRoundWithPlayerData,
 } from "../supabase/supabaseClient";
-import { MapPin } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { COURSE } from "../data/course";
 import RoundChart from "../components/RoundChart";
 
@@ -35,9 +35,15 @@ const TournamentPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="cursor-pointer" onClick={navigateHome}>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                {/* <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
                   <MapPin className="w-6 h-6 text-white" />
-                </div>
+                </div> */}
+                <button
+                  onClick={() => navigate("/")}
+                  className="p-2 hover:bg-green-100 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="w-6 h-6 text-green-600" />
+                </button>
                 <div>
                   <h1 className="text-3xl font-bold text-green-800">
                     {COURSE.name}
