@@ -11,8 +11,11 @@ import { COURSE } from "../data/course";
 import RecentResults from "../components/RecentResults";
 import TopScores from "../components/TopScores";
 import RoundModal from "../components/RoundModal";
+import { useNavigate } from "react-router-dom";
+import type { Hole } from "../types/types";
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const [completeRounds, setCompleteRounds] = useState<
     CompleteRoundWithPlayer[]
   >([]);
@@ -29,6 +32,10 @@ const HomePage: React.FC = () => {
     const allRounds = await getAllRoundsWithPlayerData();
     setCompleteRounds(allRounds);
     setIsModalOpen(false);
+  };
+
+  const navigateToHole = (id: number) => {
+    navigate(`/hole/${id}`);
   };
 
   return (
@@ -57,7 +64,6 @@ const HomePage: React.FC = () => {
               >
                 <Plus className="w-5 h-5" />
                 <span className="hidden lg:inline">Registrer runde</span>
-                {/* Registrer runde */}
               </button>
             </div>
           </div>
@@ -74,6 +80,7 @@ const HomePage: React.FC = () => {
                 <div
                   key={hole.number}
                   className="bg-green-50 p-4 rounded-lg text-center"
+                  onClick={() => navigateToHole(hole.number)}
                 >
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">
                     {hole.name}
@@ -106,7 +113,7 @@ const HomePage: React.FC = () => {
                 <div className="text-3xl font-bold text-green-800">
                   {completeRounds.length}
                 </div>
-                <div className="text-green-600">Registrerte runder</div>
+                <div className="text-green-600">Spilte runder</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-green-800">
@@ -136,7 +143,7 @@ const HomePage: React.FC = () => {
                   {completeRounds &&
                     new Set(completeRounds.map((r) => r.player?.id)).size}
                 </div>
-                <div className="text-green-600">Registrerte spillere</div>
+                <div className="text-green-600">Spillere</div>
               </div>
             </div>
           </div>

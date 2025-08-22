@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
-import type { RoundAttempt } from "../types/types";
+import type { HoleStatistics, RoundAttempt } from "../types/types";
 
 export const supabase = createClient<Database>(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -28,6 +28,52 @@ export async function getAllPlayers(): Promise<Player[]> {
     return [];
   }
   return data ?? [];
+}
+
+export async function getHoleStatistics(): Promise<HoleStatistics | null> {
+  const completeRoundsWithPlayerData = await getAllRoundsWithPlayerData();
+  if (
+    !completeRoundsWithPlayerData ||
+    completeRoundsWithPlayerData.length < 1
+  ) {
+    return null;
+  }
+  const avgFirstHole =
+    completeRoundsWithPlayerData.reduce(
+      (sum, round) => sum + round.first_hole,
+      0
+    ) / completeRoundsWithPlayerData.length;
+
+  const playersWithHoleInOne = [
+    ...new Set(
+      completeRoundsWithPlayerData
+        .filter((round) => round.first_hole === 1)
+        .map((round) => round!.player!.name)
+    ),
+  ];
+
+  const totalAttempts = completeRoundsWithPlayerData.length;
+
+  const totalHoleInOnes = completeRoundsWithPlayerData.reduce(
+    (count, round) => {
+      const holes = [
+        round.first_hole,
+        round.second_hole,
+        round.third_hole,
+        round.fourth_hole,
+        round.fifth_hole,
+      ];
+      return count + holes.filter((score) => score === 1).length;
+    },
+    0
+  );
+
+  return {
+    averageStrokes: avgFirstHole,
+    numberOfAttempts: totalAttempts,
+    numberOfHoleInOnes: totalHoleInOnes,
+    playersWithHoleInOne: playersWithHoleInOne,
+  };
 }
 
 export async function getRoundWithPlayerData(
@@ -135,4 +181,24 @@ export const formatDate = (dateString: string) => {
     day: "numeric",
     year: "numeric",
   });
+};
+
+export const getHoleScore = (
+  round: CompleteRoundWithPlayer,
+  holeNumber: number
+): number => {
+  switch (holeNumber) {
+    case 1:
+      return round.first_hole;
+    case 2:
+      return round.second_hole;
+    case 3:
+      return round.third_hole;
+    case 4:
+      return round.fourth_hole;
+    case 5:
+      return round.fifth_hole;
+    default:
+      return 0;
+  }
 };

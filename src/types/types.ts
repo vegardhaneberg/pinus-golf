@@ -9,12 +9,16 @@ export interface HoleScore {
 
 export interface Course {
   name: string;
-  holes: Array<{
-    name: string;
-    number: number;
-    par: number;
-    description: string | undefined;
-  }>;
+  holes: Array<Hole>;
+}
+
+export interface Hole {
+  id: number;
+  name: string;
+  number: number;
+  par: number;
+  description: string | undefined;
+  distance: number;
 }
 
 export interface RoundAttempt {
@@ -24,4 +28,11 @@ export interface RoundAttempt {
   hole4: number;
   hole5: number;
   player?: Player;
+}
+
+export interface HoleStatistics {
+  numberOfAttempts: number;
+  numberOfHoleInOnes: number;
+  playersWithHoleInOne: string[];
+  averageStrokes: number;
 }
