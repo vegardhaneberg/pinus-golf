@@ -133,7 +133,7 @@ export function getFiveBestRounds(
 ): CompleteRoundWithPlayer[] {
   return [...rounds]
     .sort((a, b) => calculateRoundScore(a) - calculateRoundScore(b))
-    .slice(0, 3);
+    .slice(0, 5);
 }
 
 export async function saveRoundAttempt(
