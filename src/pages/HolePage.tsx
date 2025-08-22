@@ -293,32 +293,41 @@ const HoleStatsPage: React.FC = () => {
                     return (
                       <div
                         key={score}
-                        className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4"
+                        className="flex items-center gap-0 sm:gap-1"
                       >
-                        <div className="w-full sm:w-16 text-left sm:text-right font-semibold text-gray-800 text-sm sm:text-base">
+                        {/* Left label */}
+                        <div className="w-15 pr-3 shrink-0 text-left font-semibold text-gray-800 text-sm sm:text-base">
                           {score} slag
                         </div>
-                        <div className="flex-1 bg-gray-200 rounded-full h-6 sm:h-8 relative min-w-0">
-                          <div
-                            className={`h-full rounded-full flex items-center justify-end pr-2 sm:pr-3 text-white font-semibold text-xs sm:text-sm transition-all duration-300 ${
-                              scoreDiff < 0
-                                ? "bg-green-500"
-                                : scoreDiff === 0
-                                ? "bg-blue-500"
-                                : "bg-red-500"
-                            }`}
-                            style={{ width: `${Math.max(barWidth, 15)}%` }}
-                          >
-                            <span className="whitespace-nowrap">
-                              {count} ({percentage.toFixed(0)}%)
-                            </span>
+
+                        {/* Bar (full width) */}
+                        <div className="flex-1 min-w-0">
+                          <div className="bg-gray-200 rounded-full h-8 sm:h-6">
+                            <div
+                              className={`h-full rounded-full flex items-center justify-end pr-2 sm:pr-3 text-white font-semibold text-xs sm:text-sm transition-all duration-300 ${
+                                scoreDiff < 0
+                                  ? "bg-green-300"
+                                  : scoreDiff === 0
+                                  ? "bg-blue-200"
+                                  : "bg-red-300"
+                              }`}
+                              style={{ width: `${Math.max(barWidth, 15)}%` }}
+                            >
+                              {isMobile ? (
+                                <span className="whitespace-nowrap">
+                                  {count}
+                                </span>
+                              ) : (
+                                <span className="whitespace-nowrap">
+                                  {count} ({percentage.toFixed(0)}%)
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        <div
-                          className={`"w-full sm:w-20 text-xs sm:text-sm text-gray-600 text-left sm:text-left ${
-                            isMobile ? "hidden" : ""
-                          }`}
-                        >
+
+                        {/* Right label (only on larger screens) */}
+                        <div className="hidden sm:block w-20 text-xs sm:text-sm text-gray-600 text-left">
                           {scoreDiff === 0
                             ? "Par"
                             : scoreDiff < 0
