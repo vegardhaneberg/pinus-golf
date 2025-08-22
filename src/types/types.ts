@@ -13,7 +13,6 @@ export interface Course {
 }
 
 export interface Hole {
-  id: number;
   name: string;
   number: number;
   par: number;
