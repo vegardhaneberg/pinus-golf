@@ -86,33 +86,34 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
             </label>
             <div className="relative inline-block text-left">
               <button
+                type="button"
                 onClick={() => setDropDownOpen((prev) => !prev)}
                 className="inline-flex w-48 justify-between items-center rounded-lg bg-green-200 px-4 py-2 text-sm font-medium text-green-900 shadow hover:bg-green-300 focus:outline-none"
               >
                 {selectedPlayer?.name || "Velg spiller"}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </button>
+              {dropDownOpen && (
+                <div className="absolute mt-2 w-48 rounded-lg bg-green-100 shadow-lg ring-1 ring-black ring-opacity-5">
+                  <ul className="py-1">
+                    {players &&
+                      players.map((player) => (
+                        <li key={player.id}>
+                          <button
+                            onClick={() => {
+                              setSelectedPlayer(player);
+                              setDropDownOpen(false);
+                            }}
+                            className="block w-full text-left px-4 py-2 text-sm text-green-900 hover:bg-green-200"
+                          >
+                            {player.name}
+                          </button>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {dropDownOpen && (
-              <div className="absolute mt-2 w-48 rounded-lg bg-green-100 shadow-lg ring-1 ring-black ring-opacity-5">
-                <ul className="py-1">
-                  {players &&
-                    players.map((player) => (
-                      <li key={player.id}>
-                        <button
-                          onClick={() => {
-                            setSelectedPlayer(player);
-                            setDropDownOpen(false);
-                          }}
-                          className="block w-full text-left px-4 py-2 text-sm text-green-900 hover:bg-green-200"
-                        >
-                          {player.name}
-                        </button>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            )}
           </div>
 
           <div className="mb-6">
