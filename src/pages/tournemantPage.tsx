@@ -6,7 +6,7 @@ import {
   formatDate,
   getRoundWithPlayerData,
 } from "../supabase/supabaseClient";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { COURSE } from "../data/course";
 import RoundChart from "../components/RoundChart";
 
