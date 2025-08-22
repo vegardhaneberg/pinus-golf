@@ -3,6 +3,7 @@ import { Trophy, Medal, Award } from "lucide-react";
 import { formatScoreRelativeToPar } from "../utils/scoreUtils";
 import {
   calculateRoundScore,
+  formatDate,
   type CompleteRoundWithPlayer,
 } from "../supabase/supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -76,10 +77,7 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
                     {round.player?.name ?? "feil ved lasting av spiller"}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {new Date(round.created_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {formatDate(round.created_at)}
                   </div>
                 </div>
               </div>

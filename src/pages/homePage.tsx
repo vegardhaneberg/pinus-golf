@@ -71,9 +71,15 @@ const HomePage: React.FC = () => {
         {/* Course Info */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-green-800 mb-4">
+            <h2 className="text-xl font-bold text-green-800 mb-2">
               Pinus Golfbane
             </h2>
+            <p className="text-gray-500 mb-4">
+              Pinus golfbane er blant de mest anerkjente 5-hulls
+              terrenggolfbanene i Norge. Lokalisert på vakre Vesterøy i Hvaler,
+              har banen gjort seg bemerket med tighte dueller, plutselige
+              svingninger og enorme mengder frustrasjon ⛳️
+            </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {COURSE.holes.map((hole) => (
                 <div
