@@ -65,7 +65,7 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
           {rounds.map((round, index) => (
             <div
               key={round.id}
-              className={`flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors ${getRankBorder(
+              className={`flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer ${getRankBorder(
                 index + 1
               )}`}
               onClick={() => navigateToTournament(round)}
