@@ -74,7 +74,7 @@ const HomePage: React.FC = () => {
                   key={hole.number}
                   className="bg-green-50 p-4 rounded-lg text-center"
                 >
-                  <div className="text-2xl font-bold text-green-800 mb-1">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">
                     {hole.name}
                   </div>
                   <div className="text-sm text-green-600">
