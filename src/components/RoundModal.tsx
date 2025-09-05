@@ -7,6 +7,7 @@ import {
   saveRoundAttempt,
   type Player,
 } from "../supabase/supabaseClient";
+import { getRoundCookie, setRoundCookie } from "../utils/cookieUtil";
 
 interface RoundModalProps {
   isOpen: boolean;
@@ -24,6 +25,18 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
     (async () => {
       const supabasePlayers = await getAllPlayers();
       setPlayers(supabasePlayers);
+      const currentRound = getRoundCookie();
+      if (currentRound === null) {
+        return;
+      }
+      setScores([
+        currentRound.hole1,
+        currentRound.hole2,
+        currentRound.hole3,
+        currentRound.hole4,
+        currentRound.hole5,
+      ]);
+      setSelectedPlayer(currentRound.player ? currentRound.player : null);
     })();
   }, []);
 
@@ -47,14 +60,37 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
     };
 
     await saveRoundAttempt(roundAttempt);
-    resetModal();
+    resetModal(true);
   };
 
-  const resetModal = () => {
+  const resetModal = (clearRound: boolean) => {
+    console.log("Clear round:", clearRound);
+    if (clearRound) {
+      setScores([3, 3, 3, 3, 3]);
+      setSelectedPlayer(null);
+    } else {
+      if (selectedPlayer) {
+        setRoundCookie({
+          hole1: scores[0],
+          hole2: scores[1],
+          hole3: scores[2],
+          hole4: scores[3],
+          hole5: scores[4],
+          player: selectedPlayer,
+        });
+      } else {
+        setRoundCookie({
+          hole1: scores[0],
+          hole2: scores[1],
+          hole3: scores[2],
+          hole4: scores[3],
+          hole5: scores[4],
+        });
+      }
+    }
     onClose();
-    setScores([3, 3, 3, 3, 3]);
+
     setDropDownOpen(false);
-    setSelectedPlayer(null);
   };
 
   if (!isOpen) return null;
@@ -69,7 +105,7 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
                 Registrer ny runde
               </h2>
               <button
-                onClick={resetModal}
+                onClick={() => resetModal(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X className="w-6 h-6" />
@@ -188,7 +224,7 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={resetModal}
+                onClick={() => resetModal(false)}
                 className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 Avbryt

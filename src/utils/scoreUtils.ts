@@ -17,7 +17,3 @@ export const formatScoreRelativeToPar = (
   if (difference > 0) return `+${difference}`;
   return `${difference}`;
 };
-
-// export const sortRoundsByScore = (rounds: Round[]): Round[] => {
-//   return [...rounds].sort((a, b) => a.totalScore - b.totalScore);
-// };
