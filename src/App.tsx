@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import TournamentPage from "./pages/TournemantPage";
 import HoleStatsPage from "./pages/HolePage";
 import PlayerPage from "./pages/PlayerPage";
+import TournamentPage from "./pages/TournamentPage";
 
 export default function App() {
   return (
