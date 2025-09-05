@@ -27,6 +27,10 @@ const TournamentPage: React.FC = () => {
     navigate("/");
   };
 
+  const navigateToPlayerPage = () => {
+    navigate(`/player/${round?.player_id}`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
       {/* Header */}
@@ -35,9 +39,6 @@ const TournamentPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="cursor-pointer" onClick={navigateHome}>
               <div className="flex items-center gap-3">
-                {/* <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-white" />
-                </div> */}
                 <button
                   onClick={() => navigate("/")}
                   className="p-2 hover:bg-green-100 rounded-full transition-colors"
@@ -59,7 +60,10 @@ const TournamentPage: React.FC = () => {
       {round && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-green-800 mb-4">
+            <h2
+              className="text-xl font-bold text-green-800 mb-4 cursor-pointer no-underline hover:underline"
+              onClick={() => navigateToPlayerPage()}
+            >
               {round.player?.name ?? "Ukjent"}
             </h2>
             <p className="font-semibold text-gray-800 mb-4">

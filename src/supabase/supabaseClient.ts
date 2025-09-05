@@ -30,6 +30,21 @@ export async function getAllPlayers(): Promise<Player[]> {
   return data ?? [];
 }
 
+export async function getPlayer(playerId: number): Promise<Player | undefined> {
+  const { data, error } = await supabase
+    .from("Player")
+    .select("*")
+    .eq("id", playerId)
+    .single();
+
+  if (error) {
+    console.error("Error getting player with id:", playerId);
+    return;
+  }
+
+  return data;
+}
+
 export async function getHoleStatistics(): Promise<HoleStatistics | null> {
   const completeRoundsWithPlayerData = await getAllRoundsWithPlayerData();
   if (
@@ -115,6 +130,28 @@ export async function getAllRoundsWithPlayerData(): Promise<
     console.error("Error fetching rounds with player:", error.message);
     return [];
   }
+  return data ?? [];
+}
+
+export async function getLast20RoundsForPlayer(
+  playerId: number
+): Promise<CompleteRound[]> {
+  const { data, error } = await supabase
+    .from("CompleteRound")
+    .select(
+      `
+      id, created_at, first_hole, second_hole, third_hole, fourth_hole, fifth_hole, player_id
+    `
+    )
+    .eq("player_id", playerId)
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Error fetching last 20 rounds:", error.message);
+    return [];
+  }
+
   return data ?? [];
 }
 
