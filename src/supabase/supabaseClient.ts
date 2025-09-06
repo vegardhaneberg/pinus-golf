@@ -133,7 +133,7 @@ export async function getAllRoundsWithPlayerData(): Promise<
   return data ?? [];
 }
 
-export async function getLast20RoundsForPlayer(
+export async function getRoundsForPlayer(
   playerId: number
 ): Promise<CompleteRound[]> {
   const { data, error } = await supabase
@@ -144,11 +144,10 @@ export async function getLast20RoundsForPlayer(
     `
     )
     .eq("player_id", playerId)
-    .order("created_at", { ascending: false })
-    .limit(20);
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching last 20 rounds:", error.message);
+    console.error("Error fetching rounds for player:", error.message);
     return [];
   }
 
