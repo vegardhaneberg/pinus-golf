@@ -25,7 +25,6 @@ const PlayerPage: React.FC = () => {
     PlayerStatistics | undefined
   >();
   const [player, setPlayer] = useState<Player | undefined>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,39 +38,10 @@ const PlayerPage: React.FC = () => {
       setPlayerStatistics(playerStats);
       getPlayer(playerIdFromPath).then((player) => {
         setPlayer(player);
-        setIsLoading(false);
       });
     });
   }, [playerIdFromPath]);
 
-  // const navigateHome = () => {
-  //   navigate("/");
-  // };
-
-  if (isLoading) {
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
-      hei
-      {/* Header */}
-      {/* <header className="bg-white shadow-sm border-b border-green-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate("/")}
-              className="p-2 hover:bg-green-50 rounded-full transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6 text-green-600" />
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-green-800">
-                Spillerprofil
-              </h1>
-              <p className="text-green-600">Pinus golf ™</p>
-            </div>
-          </div>
-        </div>
-      </header> */}
-    </div>;
-  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
       {/* Header */}
@@ -107,7 +77,7 @@ const PlayerPage: React.FC = () => {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-3xl font-bold text-green-800 mb-2">
-                  {player?.name ?? "999"}
+                  {player?.name ?? "-"}
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                   <div className="text-center">
@@ -141,7 +111,7 @@ const PlayerPage: React.FC = () => {
         )}
 
         {/* Hole-by-Hole Performance */}
-        {playerStatistics && (
+        {playerStatistics && player && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-green-800 mb-6">
               Hull-for-hull

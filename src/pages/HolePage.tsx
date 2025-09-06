@@ -223,7 +223,7 @@ const HoleStatsPage: React.FC = () => {
                 <div className="text-gray-600 mb-2">Verste resultat</div>
                 <div className="text-sm text-gray-500">
                   {worstScorers.length}
-                  {worstScorers.length > 1 ? "spillere" : "spiller"}
+                  {worstScorers.length > 1 ? " spillere" : " spiller"}
                 </div>
               </div>
               {pars && (
@@ -280,7 +280,7 @@ const HoleStatsPage: React.FC = () => {
             {/* Score Distribution */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
               <h2 className="text-2xl font-bold text-green-800 mb-6">
-                Slagstatistikk
+                Slagfordeling
               </h2>
               <div className="space-y-3">
                 {Object.entries(scoreDistribution)
@@ -343,7 +343,7 @@ const HoleStatsPage: React.FC = () => {
             {/* Performance Breakdown */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-green-800 mb-6">
-                Performance Breakdown
+                Slagstatistikk
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {newGetHoleInfo(holeIdFromPath).par > 3 &&
