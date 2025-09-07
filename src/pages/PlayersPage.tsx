@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, TrendingUp, Home } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Home, Plus } from "lucide-react";
 import {
   formatDate,
   getAllPlayers,
@@ -9,6 +9,7 @@ import {
   type Player,
 } from "../supabase/supabaseClient";
 import { getPlayerOverviewStatistics } from "../utils/scoreUtils";
+import RegisterPlayerModal from "../components/RegisterPlayerModal";
 
 type RoundsByPlayer = Record<number, CompleteRound[]>;
 
@@ -17,10 +18,10 @@ const PlayersPage: React.FC = () => {
 
   const [players, setPlayers] = useState<Player[]>([]);
   const [roundsByPlayer, setRoundsByPlayer] = useState<RoundsByPlayer>({});
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     getAllPlayers().then((playersFromSupabase) => {
-      console.log("Players:", playersFromSupabase);
       setPlayers(playersFromSupabase);
     });
   }, []);
@@ -51,21 +52,41 @@ const PlayersPage: React.FC = () => {
     };
   }, [players]);
 
+  const handleRegisterPlayer = (playerName: string, image: File | null) => {
+    console.log("Player name:", playerName);
+    if (image) {
+      console.log("Image file:", image.name, image.size, image.type);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-green-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate("/")}
-              className="p-2 hover:bg-green-50 rounded-full transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6 text-green-600" />
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-green-800">Spillere</h1>
-              <p className="text-green-600">Alle registrerte golfere</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/")}
+                className="p-2 hover:bg-green-50 rounded-full transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6 text-green-600" />
+              </button>
+              <div>
+                <h1 className="text-3xl font-bold text-green-800">Spillere</h1>
+                <p className="text-green-600">Alle registrerte golfere</p>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="hidden md:flex items-center gap-3">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
+              >
+                <Plus className="w-5 h-5" />
+                Legg til spiller
+              </button>
             </div>
           </div>
         </div>
@@ -106,7 +127,7 @@ const PlayersPage: React.FC = () => {
                   {/* Player Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`/players/${player.id}.jpg`}
+                      src={`https://yhjkpssjeubpbqsgnpre.supabase.co/storage/v1/object/public/players/${player.id}.jpg`}
                       alt={player.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
@@ -144,7 +165,8 @@ const PlayersPage: React.FC = () => {
                           ? " - "
                           : playerOverviewStats.handicap > 0
                           ? `+${playerOverviewStats.handicap}`
-                          : `${playerOverviewStats.handicap}`}{" "}
+                          : `${playerOverviewStats.handicap}`}
+                        {"  "}
                         handicap
                       </span>
                     </div>
@@ -186,6 +208,12 @@ const PlayersPage: React.FC = () => {
           </div>
         )}
       </div>
+      {/* Register Player Modal */}
+      <RegisterPlayerModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleRegisterPlayer}
+      />
     </div>
   );
 };

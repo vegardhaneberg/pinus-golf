@@ -64,7 +64,6 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
   };
 
   const resetModal = (clearRound: boolean) => {
-    console.log("Clear round:", clearRound);
     if (clearRound) {
       setScores([3, 3, 3, 3, 3]);
       setSelectedPlayer(null);

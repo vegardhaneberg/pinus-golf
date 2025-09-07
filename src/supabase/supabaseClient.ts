@@ -18,10 +18,7 @@ export type CompleteRoundWithPlayer = CompleteRound & {
 };
 
 export async function getAllPlayers(): Promise<Player[]> {
-  const { data, error } = await supabase
-    .from("Player")
-    .select("*")
-    .order("name");
+  const { data, error } = await supabase.from("Player").select("*").order("id");
 
   if (error) {
     console.error("Error fetching Players: ", error.message);

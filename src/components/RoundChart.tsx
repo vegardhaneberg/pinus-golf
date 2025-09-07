@@ -116,7 +116,7 @@ const RoundChart: React.FC<RoundChartProps> = ({ round, par = 3 }) => {
                 if (name === "score") return [String(value), "Slag"];
                 return [String(value), name];
               }}
-              labelFormatter={(label) => `Hull ${label}`}
+              labelFormatter={(label) => `${label}`}
             />
             <Line
               type="monotone"

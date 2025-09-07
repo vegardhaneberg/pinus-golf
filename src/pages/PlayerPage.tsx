@@ -15,10 +15,12 @@ import {
   getPlayerStatistics,
   type PlayerStatistics,
 } from "../utils/scoreUtils";
+import { useIsMobile } from "../utils/mobileUtil";
 
 const PlayerPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const playerIdFromPath = parseInt(id || "1");
+  const isMobile = useIsMobile();
 
   const [rounds, setRounds] = useState<CompleteRound[]>([]);
   const [playerStatistics, setPlayerStatistics] = useState<
@@ -34,7 +36,6 @@ const PlayerPage: React.FC = () => {
         roundsFromSupaBase,
         playerIdFromPath
       );
-      console.log("Player stats:", playerStats);
       setPlayerStatistics(playerStats);
       getPlayer(playerIdFromPath).then((player) => {
         setPlayer(player);
@@ -70,7 +71,7 @@ const PlayerPage: React.FC = () => {
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               <div className="flex-shrink-0">
                 <img
-                  src={`/players/${player.id}.jpg`}
+                  src={`https://yhjkpssjeubpbqsgnpre.supabase.co/storage/v1/object/public/players/${playerIdFromPath}.jpg`}
                   alt={player?.name ?? "999"}
                   className="w-32 h-32 rounded-full object-cover border-4 border-green-200 shadow-lg"
                   onError={(e) => {
@@ -126,10 +127,10 @@ const PlayerPage: React.FC = () => {
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="text-left py-3 px-4 font-semibold text-gray-800">
-                      Hole
+                      Hull
                     </th>
                     <th className="text-center py-3 px-4 font-semibold text-gray-800">
-                      Average
+                      Gjennomsnitt
                     </th>
                     <th className="text-center py-3 px-4 font-semibold text-gray-800">
                       Best
@@ -145,7 +146,7 @@ const PlayerPage: React.FC = () => {
                     className="border-b border-gray-100 hover:bg-gray-50"
                   >
                     <td className="py-3 px-4 font-semibold text-green-800">
-                      {COURSE.holes[0].name}
+                      {isMobile ? 1 : COURSE.holes[0].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
                       {playerStatistics.AverageRound.first_hole}
@@ -164,7 +165,7 @@ const PlayerPage: React.FC = () => {
                     className="border-b border-gray-100 hover:bg-gray-50"
                   >
                     <td className="py-3 px-4 font-semibold text-green-800">
-                      {COURSE.holes[1].name}
+                      {isMobile ? 2 : COURSE.holes[1].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
                       {playerStatistics.AverageRound.second_hole}
@@ -183,7 +184,7 @@ const PlayerPage: React.FC = () => {
                     className="border-b border-gray-100 hover:bg-gray-50"
                   >
                     <td className="py-3 px-4 font-semibold text-green-800">
-                      {COURSE.holes[2].name}
+                      {isMobile ? 3 : COURSE.holes[2].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
                       {playerStatistics.AverageRound.third_hole}
@@ -202,7 +203,7 @@ const PlayerPage: React.FC = () => {
                     className="border-b border-gray-100 hover:bg-gray-50"
                   >
                     <td className="py-3 px-4 font-semibold text-green-800">
-                      {COURSE.holes[3].name}
+                      {isMobile ? 4 : COURSE.holes[3].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
                       {playerStatistics.AverageRound.fourth_hole}
@@ -221,7 +222,7 @@ const PlayerPage: React.FC = () => {
                     className="border-b border-gray-100 hover:bg-gray-50"
                   >
                     <td className="py-3 px-4 font-semibold text-green-800">
-                      {COURSE.holes[4].name}
+                      {isMobile ? 5 : COURSE.holes[4].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
                       {playerStatistics.AverageRound.fifth_hole}
