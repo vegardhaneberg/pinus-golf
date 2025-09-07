@@ -73,6 +73,11 @@ const PlayerPage: React.FC = () => {
                   src={`/players/${player.id}.jpg`}
                   alt={player?.name ?? "999"}
                   className="w-32 h-32 rounded-full object-cover border-4 border-green-200 shadow-lg"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.onerror = null;
+                    target.src = "/players/default.jpg";
+                  }}
                 />
               </div>
               <div className="flex-1 text-center md:text-left">
