@@ -1,5 +1,6 @@
 import type { CompleteRound } from "../supabase/supabaseClient";
 import type { HoleScore } from "../types/types";
+import { calculateHandicap } from "./handicapUtil";
 
 export const calculateTotal = (scores: number[]): number => {
   return scores.reduce((accumulator, current) => accumulator + current, 0);
@@ -17,6 +18,35 @@ export const formatScoreRelativeToPar = (
   if (difference === 0) return "På par";
   if (difference > 0) return `+${difference}`;
   return `${difference}`;
+};
+
+export interface PlayerOverviewStatistics {
+  handicap: number;
+  roundCount: number;
+  average: number;
+  lastPlayed: string;
+}
+
+export const getPlayerOverviewStatistics = (
+  rounds: CompleteRound[]
+): PlayerOverviewStatistics => {
+  if (!rounds || rounds.length === 0) {
+    return {
+      handicap: 0,
+      roundCount: 0,
+      average: 0,
+      lastPlayed: "-",
+    };
+  }
+  const lastRound = rounds.sort((a, b) => {
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  })[0];
+  return {
+    handicap: calculateHandicap(rounds) ?? 0,
+    roundCount: rounds.length,
+    average: getAverageScore(rounds),
+    lastPlayed: lastRound.created_at,
+  };
 };
 
 export const getAverageScore = (rounds: CompleteRound[]): number => {
