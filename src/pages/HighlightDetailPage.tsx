@@ -7,7 +7,6 @@ import {
   type CompleteRoundWithPlayer,
   getRoundWithPlayerData,
   calculateRoundScore,
-  formatDate,
 } from "../supabase/supabaseClient";
 import MultiRoundChart from "../components/MultiRoundChart";
 import { COURSE } from "../data/course";
