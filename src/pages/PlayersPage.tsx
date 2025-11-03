@@ -5,6 +5,7 @@ import {
   formatDate,
   getAllPlayers,
   getRoundsForPlayer,
+  uploadImage,
   type CompleteRound,
   type Player,
 } from "../supabase/supabaseClient";
@@ -54,9 +55,27 @@ const PlayersPage: React.FC = () => {
 
   const handleRegisterPlayer = (playerName: string, image: File | null) => {
     console.log("Player name:", playerName);
+
+    let imageUrl = null;
     if (image) {
       console.log("Image file:", image.name, image.size, image.type);
+
+      uploadImage(image, { playerName: playerName }).then(
+        (supabaseImageUrl) => {
+          imageUrl = supabaseImageUrl;
+        }
+      );
     }
+
+    // TODO: implement player saving
+    // savePlayer(playerName).then((player) => {
+    //   console.log("Saved player:", player);
+    //   if (image && player) {
+    //     uploadAvatarAsWebpWithPngKey(player.id, image);
+    //   } else {
+    //     console.error("Could not store player image");
+    //   }
+    // });
   };
 
   return (

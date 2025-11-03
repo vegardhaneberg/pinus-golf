@@ -110,7 +110,7 @@ const HomePage: React.FC = () => {
                     </button>
                     <button
                       onClick={() => {
-                        navigate("/statistics");
+                        navigate("/highlights");
                         setShowMobileMenu(false);
                       }}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"

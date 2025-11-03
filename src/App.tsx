@@ -5,6 +5,7 @@ import PlayerPage from "./pages/PlayerPage";
 import TournamentPage from "./pages/TournamentPage";
 import PlayersPage from "./pages/PlayersPage";
 import HighlightsPage from "./pages/HighlightsPage";
+import HighlightDetailPage from "./pages/HighlightDetailPage";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/player/:id" element={<PlayerPage />} />
       <Route path="/players" element={<PlayersPage />} />
       <Route path="/highlights" element={<HighlightsPage />} />
+      <Route path="/highlight/:id" element={<HighlightDetailPage />} />
     </Routes>
   );
 }

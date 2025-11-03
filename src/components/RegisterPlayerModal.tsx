@@ -56,7 +56,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-xl">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-green-800">
-              Registrer ny spiller
+              Registrer ny spiller (ikke ferdig mekka)
             </h2>
             <button
               onClick={handleClose}

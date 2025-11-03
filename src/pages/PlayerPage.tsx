@@ -102,7 +102,9 @@ const PlayerPage: React.FC = () => {
                     <div className="text-2xl font-bold text-green-800">
                       {getAverageScore(rounds)}
                     </div>
-                    <div className="text-sm text-gray-600">Gjennomsnitt</div>
+                    <div className="text-sm text-gray-600">
+                      {isMobile ? "Snitt" : "Gjennomsnitt"}
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-800">

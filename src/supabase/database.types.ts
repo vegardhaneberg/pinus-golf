@@ -110,14 +110,17 @@ export type Database = {
         Row: {
           id: number;
           name: string;
+          image_url: string;
         };
         Insert: {
           id?: number;
           name?: string;
+          image_url?: string;
         };
         Update: {
           id?: number;
           name?: string;
+          image_url?: string;
         };
         Relationships: [];
       };

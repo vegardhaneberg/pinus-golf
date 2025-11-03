@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { v4 as uuidv4 } from "uuid";
 import type { Database } from "./database.types";
 import type { HoleStatistics, RoundAttempt } from "../types/types";
 
@@ -169,6 +170,27 @@ export function getFiveBestRounds(
     .slice(0, 5);
 }
 
+export async function savePlayer(
+  name: string,
+  imageUrl: string | null
+): Promise<Player | undefined> {
+  const { data: playerRow, error: playerErr } = await supabase
+    .from("Player")
+    .upsert({ name: name, image_url: imageUrl })
+    .select("id, name")
+    .single();
+
+  if (playerErr || !playerRow) {
+    console.error(playerErr?.message ?? "Failed to upsert/find player");
+    return;
+  }
+
+  return {
+    id: playerRow.id,
+    name: playerRow.name,
+  };
+}
+
 export async function saveRoundAttempt(
   newRound: RoundAttempt
 ): Promise<boolean> {
@@ -235,3 +257,89 @@ export const getHoleScore = (
       return 0;
   }
 };
+
+const bucketName = "players";
+
+export const uploadImage = async (
+  file: File,
+  opts?: { playerName?: string }
+): Promise<string> => {
+  const ext = file.name.split(".").pop() || "jpg";
+  const safeName =
+    (opts?.playerName ?? "player")
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]/g, "-")
+      .replace(/-+/g, "-") || "player";
+
+  const objectPath = `players/${safeName}/${uuidv4()}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(bucketName)
+    .upload(objectPath, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type || "image/jpeg",
+    });
+
+  if (uploadError) {
+    throw new Error(`Upload failed: ${uploadError.message}`);
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("players").getPublicUrl(objectPath);
+  return publicUrl;
+};
+
+export interface Highlight {
+  id: number;
+  title: string;
+  intro: string;
+  date: Date;
+  roundIds: number[];
+  blocks: HighlightBlock[];
+}
+
+export interface HighlightBlock {
+  subtitle: string;
+  text: string;
+}
+
+export const Highlights: Highlight[] = [
+  {
+    id: 1,
+    title: "Pinus golf open 2025",
+    date: new Date("2025-01-01"),
+    roundIds: [89, 76, 80],
+    intro:
+      "Da var det igjen duket for Pinus Golf Open 2025. Flott vær så alt lå til rette for en herlig runde med golf",
+    blocks: [
+      {
+        subtitle: "Kolsåstoppen",
+        text: "Helene slo meget godt ut, og etter litt trøbling med putten endte hun på par. Vegard starter i kjent stil med en boogey på Pinus Golf Open 2025. Første stikk til Helene.",
+      },
+      {
+        subtitle: "Kløfta",
+        text: "Usedvanlig godt utslag på Vegard og han ender med en birdie. Helene fortsetter på par.",
+      },
+      {
+        subtitle: "Månetoppen",
+        text: "Her treffer man jo alltid stein og det gjør både Vegard og Helene",
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Solorunde på Vegard",
+    roundIds: [87, 88],
+    intro:
+      "Vegard startet årets dugnadshelg med en liten sylfrekk solorunde på golfbanen.",
+    date: new Date("2025-01-02"),
+    blocks: [
+      {
+        subtitle: "Stang ut og stang ut",
+        text: "skulle ikke lykkes denne gangen heller. Startet stang ut med en fryyyktelig putt på første hull og fortsatte i samme baner resten av runden. RIP!",
+      },
+    ],
+  },
+];
