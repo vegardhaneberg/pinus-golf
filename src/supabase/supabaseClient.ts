@@ -170,10 +170,13 @@ export function getFiveBestRounds(
     .slice(0, 5);
 }
 
-export async function savePlayer(name: string): Promise<Player | undefined> {
+export async function savePlayer(
+  name: string,
+  imageUrl: string
+): Promise<Player | undefined> {
   const { data: playerRow, error: playerErr } = await supabase
     .from("Player")
-    .upsert({ name: name })
+    .upsert({ name: name, image_url: imageUrl })
     .select("id, name, image_url")
     .single();
 
@@ -269,7 +272,7 @@ export const uploadImage = async (
       .replace(/[^a-z0-9-_]/g, "-")
       .replace(/-+/g, "-") || "player";
 
-  const objectPath = `players/${safeName}/${uuidv4()}.${ext}`;
+  const objectPath = `${safeName}-${uuidv4()}.${ext}`;
 
   const { error: uploadError } = await supabase.storage
     .from(bucketName)
@@ -285,8 +288,67 @@ export const uploadImage = async (
 
   const {
     data: { publicUrl },
-  } = supabase.storage.from("players").getPublicUrl(objectPath);
+  } = supabase.storage.from(bucketName).getPublicUrl(objectPath);
   return publicUrl;
+};
+
+export const deletePlayerAndAssets = async (
+  playerId: number
+): Promise<boolean> => {
+  // Load player to get image URL
+  const { data: playerRow, error: playerErr } = await supabase
+    .from("Player")
+    .select("id, image_url")
+    .eq("id", playerId)
+    .single();
+
+  if (playerErr) {
+    console.error("Failed to load player before delete:", playerErr.message);
+    return false;
+  }
+
+  // Best-effort delete of image from storage (ignore errors, but log)
+  if (playerRow?.image_url) {
+    try {
+      // Public URL format: https://<proj>.supabase.co/storage/v1/object/public/players/<objectKey>
+      const idx = playerRow.image_url.indexOf("/players/");
+      if (idx !== -1) {
+        const objectKey = playerRow.image_url.substring(
+          idx + "/players/".length
+        );
+        const { error: storageErr } = await supabase.storage
+          .from(bucketName)
+          .remove([objectKey]);
+        if (storageErr) {
+          console.error("Failed to delete player image:", storageErr.message);
+        }
+      }
+    } catch (e) {
+      console.error("Unexpected error deleting image:", e);
+    }
+  }
+
+  // Delete dependent rows first to satisfy FK constraints
+  const { error: deleteRoundsErr } = await supabase
+    .from("CompleteRound")
+    .delete()
+    .eq("player_id", playerId);
+  if (deleteRoundsErr) {
+    console.error("Failed to delete player's rounds:", deleteRoundsErr.message);
+    return false;
+  }
+
+  // Finally delete player
+  const { error: deletePlayerErr } = await supabase
+    .from("Player")
+    .delete()
+    .eq("id", playerId);
+  if (deletePlayerErr) {
+    console.error("Failed to delete player:", deletePlayerErr.message);
+    return false;
+  }
+
+  return true;
 };
 
 export interface Highlight {
@@ -307,12 +369,12 @@ export interface HighlightBlock {
 export const Highlights: Highlight[] = [
   {
     id: 1,
-    title: "Pinus Golf Open (test)",
+    title: "Pinus Golf Open",
     date: new Date("2025-01-01"),
     roundIds: [89, 76, 80],
     image: "/pinus-golf-course.jpg",
     intro:
-      "Da var det igjen duket for Pinus Golf Open 2025. Flott vær så alt lå til rette for en herlig runde med golf",
+      "Da var det igjen duket for Pinus Golf Open 2025. Flott vær og alt lå til rette for en herlig runde med golf",
     blocks: [
       {
         subtitle: "Kolsåstoppen",
@@ -330,9 +392,9 @@ export const Highlights: Highlight[] = [
   },
   {
     id: 2,
-    title: "Solorunde på Vegard (test)",
+    title: "Solorunde på Vegard",
     roundIds: [87, 88],
-    image: "/pinus-golf-course.jpg",
+    image: "/solo-vegard.jpg",
     intro:
       "Vegard startet årets dugnadshelg med en liten sylfrekk solorunde på golfbanen.",
     date: new Date("2025-01-02"),
@@ -362,7 +424,15 @@ export const Highlights: Highlight[] = [
       },
       {
         subtitle: "Månetoppen",
-        text: "Frikk slår ut for Tellstrøm, mens Tellef er korrigør. Duoen gjør ",
+        text: "Frikk slår ut for Tellstrøm, mens Tellef er korrigør. Duoen gjør det meget solid og holder Tellstrøm inne i kampen om seieren.",
+      },
+      {
+        subtitle: "Amsterdam",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      },
+      {
+        subtitle: "Steinkjer",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       },
     ],
   },

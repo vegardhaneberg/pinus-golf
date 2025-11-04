@@ -5,6 +5,7 @@ import {
   formatDate,
   getAllPlayers,
   getRoundsForPlayer,
+  savePlayer,
   uploadImage,
   type CompleteRound,
   type Player,
@@ -56,27 +57,15 @@ const PlayersPage: React.FC = () => {
   const handleRegisterPlayer = (playerName: string, image: File | null) => {
     console.log("Player name:", playerName);
 
-    let imageUrl = null;
     if (image) {
       console.log("Image file:", image.name, image.size, image.type);
 
       uploadImage(image, { playerName: playerName }).then(
         (supabaseImageUrl) => {
-          imageUrl = supabaseImageUrl;
+          savePlayer(playerName, supabaseImageUrl);
         }
       );
     }
-    console.log(imageUrl);
-
-    // TODO: implement player saving
-    // savePlayer(playerName).then((player) => {
-    //   console.log("Saved player:", player);
-    //   if (image && player) {
-    //     uploadAvatarAsWebpWithPngKey(player.id, image);
-    //   } else {
-    //     console.error("Could not store player image");
-    //   }
-    // });
   };
 
   return (
@@ -147,7 +136,7 @@ const PlayersPage: React.FC = () => {
                   {/* Player Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`https://yhjkpssjeubpbqsgnpre.supabase.co/storage/v1/object/public/players/${player.id}.jpg`}
+                      src={player.image_url}
                       alt={player.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {

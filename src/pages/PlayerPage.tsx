@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getRoundsForPlayer,
   getPlayer,
+  deletePlayerAndAssets,
   type CompleteRound,
   type Player,
 } from "../supabase/supabaseClient";
@@ -28,6 +29,8 @@ const PlayerPage: React.FC = () => {
   >();
   const [player, setPlayer] = useState<Player | undefined>();
   const navigate = useNavigate();
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   useEffect(() => {
     getRoundsForPlayer(playerIdFromPath).then((roundsFromSupaBase) => {
@@ -71,7 +74,7 @@ const PlayerPage: React.FC = () => {
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               <div className="flex-shrink-0">
                 <img
-                  src={`https://yhjkpssjeubpbqsgnpre.supabase.co/storage/v1/object/public/players/${playerIdFromPath}.jpg`}
+                  src={player?.image_url}
                   alt={player?.name ?? "999"}
                   className="w-32 h-32 rounded-full object-cover border-4 border-green-200 shadow-lg"
                   onError={(e) => {
@@ -244,6 +247,63 @@ const PlayerPage: React.FC = () => {
           </div>
         )}
       </div>
+      {/* Sticky footer actions */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        {player && (
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={() => setIsDeleteOpen(true)}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+            >
+              Slett spiller
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Delete confirmation modal */}
+      {isDeleteOpen && player && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => !isDeleting && setIsDeleteOpen(false)}
+          />
+          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              Bekreft sletting
+            </h3>
+            <p className="text-gray-700 mb-6">
+              Er du sikker på at du vil slette {player.name}? Dette kan ikke
+              angres.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsDeleteOpen(false)}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+              >
+                Avbryt
+              </button>
+              <button
+                onClick={async () => {
+                  if (!player) return;
+                  setIsDeleting(true);
+                  const ok = await deletePlayerAndAssets(player.id);
+                  setIsDeleting(false);
+                  if (ok) {
+                    setIsDeleteOpen(false);
+                    navigate("/players");
+                  }
+                }}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold disabled:opacity-60"
+              >
+                {isDeleting ? "Sletter..." : "Slett"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
