@@ -149,9 +149,9 @@ const HoleStatsPage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Hole Info Card */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-center gap-3 mb-4">
                 <Target className="w-6 h-6 text-green-600" />
-                <h2 className="text-2xl font-bold text-green-800">Overview</h2>
+                <h2 className="text-2xl font-bold text-green-800">Oversikt</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
@@ -234,7 +234,7 @@ const HoleStatsPage: React.FC = () => {
                   </div>
                   <div className="text-gray-600 mb-2">Par Rate</div>
                   <div className="text-sm text-gray-500">
-                    {pars.length} av {totalScores.length} ganger
+                    {pars.length} av {totalScores.length} spilte runder
                   </div>
                 </div>
               )}
@@ -279,8 +279,8 @@ const HoleStatsPage: React.FC = () => {
 
             {/* Score Distribution */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <h2 className="text-2xl font-bold text-green-800 mb-6">
-                Slagfordeling
+              <h2 className="text-2xl font-bold text-green-800 mb-6 text-center">
+                Statistikk
               </h2>
               <div className="space-y-3">
                 {Object.entries(scoreDistribution)
@@ -337,82 +337,6 @@ const HoleStatsPage: React.FC = () => {
                       </div>
                     );
                   })}
-              </div>
-            </div>
-
-            {/* Performance Breakdown */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-green-800 mb-6">
-                Slagstatistikk
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {newGetHoleInfo(holeIdFromPath).par > 3 &&
-                  eagles?.length &&
-                  eagles?.length > 0 && (
-                    <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                      <div className="text-2xl font-bold text-yellow-700 mb-1">
-                        {eagles.length}
-                      </div>
-                      <div className="text-yellow-600 font-semibold">
-                        Eagles
-                      </div>
-                      <div className="text-sm text-gray-600">(-2 strokes)</div>
-                    </div>
-                  )}
-
-                {holeInOnes?.length > 0 && (
-                  <div className="text-center p-4 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg border-2 border-yellow-400">
-                    <div className="text-2xl font-bold text-yellow-800 mb-1">
-                      {holeInOnes.length}
-                    </div>
-                    <div className="text-yellow-700 font-semibold">
-                      Hole in One
-                    </div>
-                    <div className="text-sm text-yellow-600">
-                      🏆 Rett i koppen!
-                    </div>
-                  </div>
-                )}
-
-                {birdies && (
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-700 mb-1">
-                      {birdies.length}
-                    </div>
-                    <div className="text-green-600 font-semibold">Birdies</div>
-                    <div className="text-sm text-gray-600">-1 slag</div>
-                  </div>
-                )}
-                {pars && (
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-700 mb-1">
-                      {pars.length}
-                    </div>
-                    <div className="text-blue-600 font-semibold">Par</div>
-                    <div className="text-sm text-gray-600">0</div>
-                  </div>
-                )}
-
-                {bogeys && (
-                  <div className="text-center p-4 bg-orange-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-700 mb-1">
-                      {bogeys.length}
-                    </div>
-                    <div className="text-orange-600 font-semibold">Bogeys</div>
-                    <div className="text-sm text-gray-600">+1 slag</div>
-                  </div>
-                )}
-                {doubleBogeyPlus && (
-                  <div className="text-center p-4 bg-red-50 rounded-lg">
-                    <div className="text-2xl font-bold text-red-700 mb-1">
-                      {doubleBogeyPlus.length}
-                    </div>
-                    <div className="text-red-600 font-semibold">
-                      Double Bogey+
-                    </div>
-                    <div className="text-sm text-gray-600">+2 eller mer</div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
