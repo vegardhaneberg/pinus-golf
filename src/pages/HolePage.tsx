@@ -85,24 +85,8 @@ const HoleStatsPage: React.FC = () => {
 
   const par = newGetHoleInfo(holeIdFromPath).par;
   const averageRelativeToPar = parseFloat(averageScore) - par;
-
-  // Hole in ones (score of 1)
   const holeInOnes = holeScores?.filter((s) => s.score === 1);
-
-  // Eagles (2 under par)
-  const eagles = holeScores?.filter((s) => s.score === par - 2);
-
-  // Birdies (1 under par)
-  const birdies = holeScores?.filter((s) => s.score === par - 1);
-
-  // Pars
   const pars = holeScores?.filter((s) => s.score === par);
-
-  // Bogeys (1 over par)
-  const bogeys = holeScores?.filter((s) => s.score === par + 1);
-
-  // Double bogeys and worse
-  const doubleBogeyPlus = holeScores?.filter((s) => s.score >= par + 2);
 
   // Best and worst scores
   const bestScore = totalScores ? Math.min(...totalScores) : 999;
