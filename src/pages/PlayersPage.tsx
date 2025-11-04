@@ -66,6 +66,7 @@ const PlayersPage: React.FC = () => {
         }
       );
     }
+    console.log(imageUrl);
 
     // TODO: implement player saving
     // savePlayer(playerName).then((player) => {
