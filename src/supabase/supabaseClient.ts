@@ -170,14 +170,11 @@ export function getFiveBestRounds(
     .slice(0, 5);
 }
 
-export async function savePlayer(
-  name: string,
-  imageUrl: string | null
-): Promise<Player | undefined> {
+export async function savePlayer(name: string): Promise<Player | undefined> {
   const { data: playerRow, error: playerErr } = await supabase
     .from("Player")
-    .upsert({ name: name, image_url: imageUrl })
-    .select("id, name")
+    .upsert({ name: name })
+    .select("id, name, image_url")
     .single();
 
   if (playerErr || !playerRow) {
@@ -188,6 +185,7 @@ export async function savePlayer(
   return {
     id: playerRow.id,
     name: playerRow.name,
+    image_url: playerRow.image_url,
   };
 }
 
