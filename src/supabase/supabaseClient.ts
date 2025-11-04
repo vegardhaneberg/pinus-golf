@@ -297,6 +297,7 @@ export interface Highlight {
   intro: string;
   date: Date;
   roundIds: number[];
+  image: string;
   blocks: HighlightBlock[];
 }
 
@@ -308,9 +309,10 @@ export interface HighlightBlock {
 export const Highlights: Highlight[] = [
   {
     id: 1,
-    title: "Pinus golf open 2025",
+    title: "Pinus Golf Open (test)",
     date: new Date("2025-01-01"),
     roundIds: [89, 76, 80],
+    image: "/pinus-golf-course.jpg",
     intro:
       "Da var det igjen duket for Pinus Golf Open 2025. Flott vær så alt lå til rette for en herlig runde med golf",
     blocks: [
@@ -330,8 +332,9 @@ export const Highlights: Highlight[] = [
   },
   {
     id: 2,
-    title: "Solorunde på Vegard",
+    title: "Solorunde på Vegard (test)",
     roundIds: [87, 88],
+    image: "/pinus-golf-course.jpg",
     intro:
       "Vegard startet årets dugnadshelg med en liten sylfrekk solorunde på golfbanen.",
     date: new Date("2025-01-02"),
@@ -339,6 +342,29 @@ export const Highlights: Highlight[] = [
       {
         subtitle: "Stang ut og stang ut",
         text: "skulle ikke lykkes denne gangen heller. Startet stang ut med en fryyyktelig putt på første hull og fortsatte i samme baner resten av runden. RIP!",
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Helgen Games 2025",
+    date: new Date("2025-06-10"),
+    roundIds: [89, 76, 80],
+    image: "/helgen-games-2025.jpg",
+    intro:
+      "Året er 2025 og Helgen Games er som alltid tilbake på Hvaler! Etter tap i både quiz og volleyball hadde Norrunther kniven på stupen før årets parterrenggolf braket løs!",
+    blocks: [
+      {
+        subtitle: "Kolsåstoppen",
+        text: 'Frikk og Vegard startet ballet for lag Tellstrøm. Vegard hadde gått ekstremt høyt ut i forkant av øvelsen og skrytt i både tide og utide om han nylig ervervede "Veien til golf"-kurs. Lite så vi til kurs-skillsa og han bidro sterkt til en svak start med boogey (+1) på første hull for Tellstrøm. Fra lag Norrunther var Vegard og Kristin rolige som skjøra på tunet og spilte inn en solid birdie (-1) fra Kolsåstoppen. Første stikk til Norrunther.',
+      },
+      {
+        subtitle: "Kløfta",
+        text: "Fra Kløfta var det dags for Martin, Amanda og rookien XXX. XXX viste ingen tegn til at dette var hans første deltagelse i parterrenggolf og trioen sikret par på andre hull. Tellstrøm fulgte opp med Signe, Matty og Hedda (?), og også de spilte sikkert inn på par. ",
+      },
+      {
+        subtitle: "Månetoppen",
+        text: "Frikk slår ut for Tellstrøm, mens Tellef er korrigør. Duoen gjør ",
       },
     ],
   },

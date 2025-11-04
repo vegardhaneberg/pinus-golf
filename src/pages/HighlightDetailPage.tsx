@@ -101,13 +101,15 @@ const HighlightDetailPage: React.FC = () => {
           </h2>
 
           {/* Image */}
-          <div className="mb-8 rounded-lg overflow-hidden">
-            <img
-              src="/pinus-golf-course.jpg"
-              alt="Pinus Golf Course"
-              className="w-full h-auto object-cover"
-            />
-          </div>
+          {highlight.image && (
+            <div className="mb-8 rounded-lg overflow-hidden">
+              <img
+                src={highlight.image}
+                alt={highlight.title}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          )}
 
           {/* Intro */}
           <p className="text-gray-700 leading-relaxed text-lg md:text-xl mb-8 font-bold">
