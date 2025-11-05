@@ -145,7 +145,8 @@ const HomePage: React.FC = () => {
               Pinus golfbane er blant de mest anerkjente 5-hulls
               terrenggolfbanene i Norge. Lokalisert på vakre Vesterøy i Hvaler,
               har banen gjort seg bemerket med tighte dueller, plutselige
-              svingninger og enorme mengder frustrasjon ⛳️
+              svingninger og enorme mengder frustrasjon ⛳️ Klikk på ett av de
+              frem hullene under for å lese mer!
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {COURSE.holes.map((hole) => (
