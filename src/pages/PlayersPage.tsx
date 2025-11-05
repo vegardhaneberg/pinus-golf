@@ -175,8 +175,8 @@ const PlayersPage: React.FC = () => {
                           : playerOverviewStats.handicap > 0
                           ? `+${playerOverviewStats.handicap}`
                           : `${playerOverviewStats.handicap}`}
-                        {"  "}
-                        handicap
+                        {"\u00A0"}
+                        Handicap
                       </span>
                     </div>
 
