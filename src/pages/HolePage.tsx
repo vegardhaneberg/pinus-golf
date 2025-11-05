@@ -195,7 +195,7 @@ const HoleStatsPage: React.FC = () => {
                 <div className="text-gray-600 mb-2">Beste resultat</div>
                 <div className="text-sm text-gray-500">
                   {bestScorers.length} {}
-                  {bestScorers.length > 1 ? "spillere" : "spiller"}
+                  {bestScorers.length > 1 ? " ganger" : " gang"}
                 </div>
               </div>
 
@@ -207,7 +207,7 @@ const HoleStatsPage: React.FC = () => {
                 <div className="text-gray-600 mb-2">Verste resultat</div>
                 <div className="text-sm text-gray-500">
                   {worstScorers.length}
-                  {worstScorers.length > 1 ? " spillere" : " spiller"}
+                  {worstScorers.length > 1 ? " ganger" : " gang"}
                 </div>
               </div>
               {pars && (
