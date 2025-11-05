@@ -102,11 +102,11 @@ const HighlightDetailPage: React.FC = () => {
 
           {/* Image */}
           {highlight.image && (
-            <div className="mb-8 rounded-lg overflow-hidden">
+            <div className="mb-8 rounded-lg overflow-hidden flex justify-center">
               <img
                 src={highlight.image}
                 alt={highlight.title}
-                className="w-full h-auto object-cover"
+                className="max-h-[520px] w-auto max-w-full object-contain rounded-lg"
               />
             </div>
           )}
