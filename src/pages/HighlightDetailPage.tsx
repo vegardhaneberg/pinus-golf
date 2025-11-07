@@ -90,6 +90,7 @@ const HighlightDetailPage: React.FC = () => {
               <h1 className="text-3xl font-bold text-green-800">
                 {formatHighlightDate(highlight.date)}
               </h1>
+              <p className="text-green-600">Pinus golf ™</p>
             </div>
           </div>
         </div>

@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import type { Database } from "./database.types";
