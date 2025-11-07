@@ -72,8 +72,11 @@ const TournamentPage: React.FC = () => {
                 round.player?.name +
                 " til "}
               <span className="text-green-600">
-                {calculateRoundScore(round) + " slag"}
+                {calculateRoundScore(round) + " slag. "}
               </span>
+              {calculateRoundScore(round) < 20
+                ? "Vi gratulerer!"
+                : "Bedre lykke neste gang..."}
             </p>
 
             {round && <RoundChart par={3} round={round} />}

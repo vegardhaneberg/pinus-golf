@@ -11,6 +11,7 @@ import { calculateHandicap } from "../utils/handicapUtil";
 import { ArrowLeft } from "lucide-react";
 import { COURSE } from "../data/course";
 import {
+  convertToCommaDecimal,
   findBestRound,
   getAverageScore,
   getPlayerStatistics,
@@ -91,7 +92,9 @@ const PlayerPage: React.FC = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-800">
-                      {calculateHandicap(rounds) ?? "-"}
+                      {calculateHandicap(rounds)
+                        ? convertToCommaDecimal(calculateHandicap(rounds)!)
+                        : "-"}
                     </div>
                     <div className="text-sm text-gray-600">Handicap</div>
                   </div>
@@ -103,7 +106,7 @@ const PlayerPage: React.FC = () => {
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-800">
-                      {getAverageScore(rounds)}
+                      {convertToCommaDecimal(getAverageScore(rounds))}
                     </div>
                     <div className="text-sm text-gray-600">
                       {isMobile ? "Snitt" : "Gjennomsnitt"}
@@ -154,7 +157,9 @@ const PlayerPage: React.FC = () => {
                       {isMobile ? 1 : COURSE.holes[0].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
-                      {playerStatistics.AverageRound.first_hole}
+                      {convertToCommaDecimal(
+                        playerStatistics.AverageRound.first_hole
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="font-semibold text-green-600">
@@ -173,7 +178,9 @@ const PlayerPage: React.FC = () => {
                       {isMobile ? 2 : COURSE.holes[1].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
-                      {playerStatistics.AverageRound.second_hole}
+                      {convertToCommaDecimal(
+                        playerStatistics.AverageRound.second_hole
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="font-semibold text-green-600">
@@ -192,7 +199,9 @@ const PlayerPage: React.FC = () => {
                       {isMobile ? 3 : COURSE.holes[2].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
-                      {playerStatistics.AverageRound.third_hole}
+                      {convertToCommaDecimal(
+                        playerStatistics.AverageRound.third_hole
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="font-semibold text-green-600">
@@ -211,7 +220,9 @@ const PlayerPage: React.FC = () => {
                       {isMobile ? 4 : COURSE.holes[3].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
-                      {playerStatistics.AverageRound.fourth_hole}
+                      {convertToCommaDecimal(
+                        playerStatistics.AverageRound.fourth_hole
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="font-semibold text-green-600">
@@ -230,7 +241,9 @@ const PlayerPage: React.FC = () => {
                       {isMobile ? 5 : COURSE.holes[4].name}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold">
-                      {playerStatistics.AverageRound.fifth_hole}
+                      {convertToCommaDecimal(
+                        playerStatistics.AverageRound.fifth_hole
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="font-semibold text-green-600">

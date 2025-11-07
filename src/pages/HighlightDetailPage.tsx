@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Award, Medal, Trophy } from "lucide-react";
 import {
   Highlights,
   type Highlight,
-  type CompleteRoundWithPlayer,
-  getRoundWithPlayerData,
-  calculateRoundScore,
+  type HighlightRound,
 } from "../supabase/supabaseClient";
 import MultiRoundChart from "../components/MultiRoundChart";
 import { COURSE } from "../data/course";
@@ -15,19 +13,16 @@ const HighlightDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const highlightId = Number(id);
   const navigate = useNavigate();
-  const [rounds, setRounds] = useState<CompleteRoundWithPlayer[]>([]);
+  const [rounds, setRounds] = useState<HighlightRound[]>([]);
 
   const highlight: Highlight | undefined = Highlights.find(
     (h) => h.id === highlightId
   );
 
   useEffect(() => {
-    if (highlight && highlight.roundIds && highlight.roundIds.length > 0) {
+    if (highlight && highlight.rounds && highlight.rounds.length > 0) {
       (async () => {
-        const fetchedRounds = await Promise.all(
-          highlight.roundIds.map((roundId) => getRoundWithPlayerData(roundId))
-        );
-        setRounds(fetchedRounds);
+        setRounds(highlight.rounds);
       })();
     }
   }, [highlight]);
@@ -70,6 +65,14 @@ const HighlightDetailPage: React.FC = () => {
       </div>
     );
   }
+
+  const rankedRounds = rounds
+    .map((round, index) => ({
+      round,
+      totalStrokes: round.strokes.reduce((sum, stroke) => sum + stroke, 0),
+      index,
+    }))
+    .sort((a, b) => a.totalStrokes - b.totalStrokes);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
@@ -139,24 +142,62 @@ const HighlightDetailPage: React.FC = () => {
                 <h3 className="text-xl font-bold text-green-800 mb-4">
                   Resultater
                 </h3>
-                <div className="space-y-2 mb-4">
-                  {rounds.map((round) => (
-                    <div
-                      key={round.id}
-                      className="flex items-center justify-between text-sm"
-                    >
-                      <span
-                        className="font-semibold text-green-800 cursor-pointer hover:underline"
-                        onClick={() => navigate(`/player/${round.player_id}`)}
+                <ol className="space-y-3 mb-4">
+                  {rankedRounds.map(({ round, totalStrokes }, idx) => {
+                    const place = idx + 1;
+                    const icon =
+                      place === 1
+                        ? {
+                            element: (
+                              <Trophy className="w-6 h-6 text-yellow-500" />
+                            ),
+                            label: "Førsteplass",
+                          }
+                        : place === 2
+                        ? {
+                            element: (
+                              <Medal className="w-6 h-6 text-slate-400" />
+                            ),
+                            label: "Andreplass",
+                          }
+                        : place === 3
+                        ? {
+                            element: (
+                              <Award className="w-6 h-6 text-amber-600" />
+                            ),
+                            label: "Tredjeplass",
+                          }
+                        : null;
+
+                    return (
+                      <li
+                        key={`${round.teamName ?? "lag"}-${idx}`}
+                        className="flex items-center justify-between rounded-lg border border-green-100 px-4 py-3 text-sm shadow-sm"
                       >
-                        {round.player?.name ?? "Ukjent"}
-                      </span>
-                      <span className="text-gray-600">
-                        {calculateRoundScore(round) + " slag"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-lg font-bold text-green-900 w-6 text-center">
+                            {icon ? (
+                              <span
+                                className="inline-flex items-center justify-center"
+                                aria-label={icon.label}
+                              >
+                                {icon.element}
+                              </span>
+                            ) : (
+                              place
+                            )}
+                          </span>
+                          <span className="font-semibold text-green-800">
+                            {round.teamName ?? "Ukjent"}
+                          </span>
+                        </div>
+                        <span className="text-gray-700 font-semibold">
+                          {totalStrokes} slag
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
               </div>
               <MultiRoundChart
                 par={COURSE.holes[0]?.par ?? 3}

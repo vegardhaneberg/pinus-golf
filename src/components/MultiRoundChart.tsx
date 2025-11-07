@@ -9,13 +9,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { CompleteRoundWithPlayer } from "../supabase/supabaseClient";
+import type {
+  CompleteRoundWithPlayer,
+  HighlightRound,
+} from "../supabase/supabaseClient";
 import { COURSE } from "../data/course";
 import { useIsMobile } from "../utils/mobileUtil";
 
 interface MultiRoundChartProps {
   par?: number;
-  rounds: CompleteRoundWithPlayer[];
+  rounds: HighlightRound[];
 }
 
 // Color palette for different lines
@@ -46,18 +49,22 @@ const MultiRoundChart: React.FC<MultiRoundChartProps> = ({
     { key: "fifth_hole", label: 5 },
   ];
 
-  const toChartData = (round: CompleteRoundWithPlayer, parPerHole = 3) => {
+  const toChartData = (round: HighlightRound, fallbackParPerHole = 3) => {
     let runningScore = 0;
-    return HOLE_KEYS.map(({ key, label }) => {
-      const score = (round[key] as unknown as number) ?? 0;
-      runningScore += score; // sum up to current hole
-      const parToHere = label * parPerHole; // par accumulated to this hole
-      const diff = runningScore - parToHere; // cumulative diff vs par
+    let runningPar = 0;
+
+    return HOLE_KEYS.map(({ label }) => {
+      const strokeValue = round.strokes[label - 1] ?? 0;
+      runningScore += strokeValue;
+
+      const holePar = COURSE.holes[label - 1]?.par ?? fallbackParPerHole;
+      runningPar += holePar;
+
+      const diff = runningScore - runningPar;
 
       return {
         holeNo: label,
         holeName: COURSE.holes[label - 1]?.name,
-        score,
         diff,
       };
     });
@@ -65,11 +72,11 @@ const MultiRoundChart: React.FC<MultiRoundChartProps> = ({
 
   // Create unique keys for each round (using round ID to ensure uniqueness)
   const roundKeys = rounds.map((round, index) => {
-    const playerName = round.player?.name ?? `Spiller ${index + 1}`;
+    const playerName = round.teamName ?? `Spiller ${index + 1}`;
     return {
-      roundId: round.id,
+      roundId: index,
       playerName: playerName,
-      key: `round_${round.id}`,
+      key: `round_${index}`,
     };
   });
 
@@ -80,12 +87,11 @@ const MultiRoundChart: React.FC<MultiRoundChartProps> = ({
       holeName: COURSE.holes[label - 1]?.name,
     };
 
-    rounds.forEach((round) => {
+    rounds.forEach((round, index) => {
       const roundData = toChartData(round, par);
       const holeData = roundData.find((d) => d.holeNo === label);
       if (holeData) {
-        // Use round ID as key to ensure uniqueness
-        dataPoint[`round_${round.id}`] = holeData.diff;
+        dataPoint[`round_${index}`] = holeData.diff;
       }
     });
 

@@ -15,6 +15,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
   const [playerName, setPlayerName] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -25,12 +26,17 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
         setImagePreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+      setImageError(null);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!playerName.trim()) return;
+    if (!selectedImage) {
+      setImageError("Du må laste opp et bilde av spilleren");
+      return;
+    }
 
     onSubmit(playerName.trim(), selectedImage);
 
@@ -38,6 +44,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
     setPlayerName("");
     setSelectedImage(null);
     setImagePreview(null);
+    setImageError(null);
     onClose();
   };
 
@@ -45,6 +52,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
     setPlayerName("");
     setSelectedImage(null);
     setImagePreview(null);
+    setImageError(null);
     onClose();
   };
 
@@ -56,7 +64,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-xl">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-green-800">
-              Registrer ny spiller (ikke ferdig mekka)
+              Registrer ny spiller
             </h2>
             <button
               onClick={handleClose}
@@ -91,7 +99,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
               htmlFor="playerImage"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Bilde (Valgfritt)
+              Bilde
             </label>
             <div className="flex flex-col items-center">
               {imagePreview ? (
@@ -117,11 +125,15 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
                   accept="image/*"
                   onChange={handleImageChange}
                   className="hidden"
+                  required
                 />
               </label>
               <p className="text-xs text-gray-500 mt-2">
                 JPG eller PNG (maks 1MB)
               </p>
+              {imageError && (
+                <p className="text-sm text-red-600 mt-2">{imageError}</p>
+              )}
             </div>
           </div>
 

@@ -17,6 +17,10 @@ import {
 import { COURSE } from "../data/course";
 import type { Hole } from "../types/types";
 import { useIsMobile } from "../utils/mobileUtil";
+import {
+  convertStringToCommaDecimal,
+  convertToCommaDecimal,
+} from "../utils/scoreUtils";
 
 const HoleStatsPage: React.FC = () => {
   const isMobile = useIsMobile();
@@ -123,7 +127,7 @@ const HoleStatsPage: React.FC = () => {
                     {newGetHoleInfo(holeIdFromPath).name}
                   </h1>
                   <p className="text-green-600">
-                    Par {par} • {holeInfo.distance} meter
+                    Par {par} • {convertToCommaDecimal(holeInfo.distance)} meter
                   </p>
                 </div>
               </div>
@@ -146,7 +150,7 @@ const HoleStatsPage: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-800 mb-1">
-                    {holeInfo.distance}
+                    {convertToCommaDecimal(holeInfo.distance)}
                   </div>
                   <div className="text-gray-600">Meter</div>
                 </div>
@@ -182,8 +186,12 @@ const HoleStatsPage: React.FC = () => {
                   {averageRelativeToPar === 0
                     ? "Even with par"
                     : averageRelativeToPar > 0
-                    ? `+${averageRelativeToPar.toFixed(2)} over par`
-                    : `${averageRelativeToPar.toFixed(2)} under par`}
+                    ? `+${convertStringToCommaDecimal(
+                        averageRelativeToPar.toFixed(2)
+                      )} over par`
+                    : `${convertStringToCommaDecimal(
+                        averageRelativeToPar.toFixed(2)
+                      )} under par`}
                 </div>
               </div>
 

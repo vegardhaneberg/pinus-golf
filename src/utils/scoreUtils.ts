@@ -192,3 +192,11 @@ const calculateHolePercentages = (rounds: CompleteRound[]): number[] => {
 
   return counts.map((count) => Math.round((count / rounds.length) * 100));
 };
+
+export const convertToCommaDecimal = (n: number): string => {
+  return n.toString().replace(".", ",");
+};
+
+export const convertStringToCommaDecimal = (n: string): string => {
+  return n.replace(".", ",");
+};

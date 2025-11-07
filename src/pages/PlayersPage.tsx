@@ -10,7 +10,10 @@ import {
   type CompleteRound,
   type Player,
 } from "../supabase/supabaseClient";
-import { getPlayerOverviewStatistics } from "../utils/scoreUtils";
+import {
+  convertToCommaDecimal,
+  getPlayerOverviewStatistics,
+} from "../utils/scoreUtils";
 import RegisterPlayerModal from "../components/RegisterPlayerModal";
 
 type RoundsByPlayer = Record<number, CompleteRound[]>;
@@ -54,17 +57,30 @@ const PlayersPage: React.FC = () => {
     };
   }, [players]);
 
-  const handleRegisterPlayer = (playerName: string, image: File | null) => {
-    console.log("Player name:", playerName);
+  const handleRegisterPlayer = async (
+    playerName: string,
+    image: File | null
+  ) => {
+    if (!image) {
+      console.error("Image is required to register a player");
+      return;
+    }
 
-    if (image) {
-      console.log("Image file:", image.name, image.size, image.type);
+    try {
+      const supabaseImageUrl = await uploadImage(image, {
+        playerName,
+      });
+      const savedPlayer = await savePlayer(playerName, supabaseImageUrl);
 
-      uploadImage(image, { playerName: playerName }).then(
-        (supabaseImageUrl) => {
-          savePlayer(playerName, supabaseImageUrl);
-        }
-      );
+      if (!savedPlayer) {
+        console.error("Failed to save player after image upload");
+        return;
+      }
+
+      const updatedPlayers = await getAllPlayers();
+      setPlayers(updatedPlayers);
+    } catch (error) {
+      console.error("Failed to register player:", error);
     }
   };
 
@@ -173,8 +189,12 @@ const PlayersPage: React.FC = () => {
                         {playerOverviewStats.handicap === 0
                           ? " - "
                           : playerOverviewStats.handicap > 0
-                          ? `+${playerOverviewStats.handicap}`
-                          : `${playerOverviewStats.handicap}`}
+                          ? `+${convertToCommaDecimal(
+                              playerOverviewStats.handicap
+                            )}`
+                          : `${convertToCommaDecimal(
+                              playerOverviewStats.handicap
+                            )}`}
                         {"\u00A0"}
                         Handicap
                       </span>
@@ -191,7 +211,7 @@ const PlayersPage: React.FC = () => {
                       <div className="flex justify-between text-sm text-gray-600 mt-1">
                         <span>Gjennomsnitt:</span>
                         <span className="font-semibold">
-                          {playerOverviewStats.average}
+                          {convertToCommaDecimal(playerOverviewStats.average)}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm text-gray-600 mt-1">

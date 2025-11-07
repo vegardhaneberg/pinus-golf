@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import type { Database } from "./database.types";
@@ -356,11 +357,15 @@ export interface Highlight {
   title: string;
   intro: string;
   date: Date;
-  roundIds: number[];
+  rounds: HighlightRound[];
   image: string;
   blocks: HighlightBlock[];
 }
 
+export interface HighlightRound {
+  teamName: string;
+  strokes: number[];
+}
 export interface HighlightBlock {
   subtitle: string;
   text: string;
@@ -371,7 +376,16 @@ export const Highlights: Highlight[] = [
     id: 1,
     title: "Pinus Golf Open",
     date: new Date("2025-01-01"),
-    roundIds: [89, 76, 80],
+    rounds: [
+      {
+        teamName: "Helene",
+        strokes: [3, 5, 3, 2, 3],
+      },
+      {
+        teamName: "Vegard",
+        strokes: [5, 3, 4, 3, 3],
+      },
+    ],
     image: "/pinus-golf-course.jpg",
     intro:
       "Da var det igjen duket for Pinus Golf Open 2025. Flott vær og alt lå til rette for en herlig runde med golf",
@@ -393,7 +407,36 @@ export const Highlights: Highlight[] = [
   {
     id: 2,
     title: "Solorunde på Vegard",
-    roundIds: [87, 88],
+    rounds: [
+      {
+        teamName: "Vegard",
+        strokes: [4, 5, 4, 3, 4],
+      },
+      {
+        teamName: "Vegard 2",
+        strokes: [4, 3, 4, 3, 2],
+      },
+      {
+        teamName: "Vegard 3",
+        strokes: [2, 3, 4, 3, 3],
+      },
+      {
+        teamName: "Vegard 4",
+        strokes: [3, 3, 4, 3, 5],
+      },
+      {
+        teamName: "Vegard 5",
+        strokes: [3, 3, 4, 4, 4],
+      },
+      {
+        teamName: "Vegard 6",
+        strokes: [3, 5, 7, 4, 4],
+      },
+      {
+        teamName: "Vegard 7",
+        strokes: [2, 2, 3, 2, 3],
+      },
+    ],
     image: "/solo-vegard.jpg",
     intro:
       "Vegard startet årets dugnadshelg med en liten sylfrekk solorunde på golfbanen.",
@@ -401,7 +444,7 @@ export const Highlights: Highlight[] = [
     blocks: [
       {
         subtitle: "Stang ut og stang ut",
-        text: "skulle ikke lykkes denne gangen heller. Startet stang ut med en fryyyktelig putt på første hull og fortsatte i samme baner resten av runden. RIP!",
+        text: "Vegard fortsetter jakten på årsbeste på Pinus Golfbane for 2025, men det skulle ikke lykkes denne gangen heller. Startet stang ut med en fryyyktelig putt på første hull og fortsatte i samme baner resten av runden. Bildet over viser en tydelig frustrert Vegard spille seg inn fra en seig posisjon langt ute i røffen. RIP!",
       },
     ],
   },
@@ -409,7 +452,16 @@ export const Highlights: Highlight[] = [
     id: 3,
     title: "Helgen Games 2025",
     date: new Date("2025-06-10"),
-    roundIds: [89, 76, 80],
+    rounds: [
+      {
+        teamName: "Norrunther",
+        strokes: [2, 3, 2, 2, 3],
+      },
+      {
+        teamName: "Tellstrøm",
+        strokes: [4, 3, 2, 2, 2],
+      },
+    ],
     image: "/helgen-games-2025.jpg",
     intro:
       "Året er 2025 og Helgen Games er som alltid tilbake på Hvaler! Etter tap i både quiz og volleyball hadde Norrunther kniven på stupen før årets parterrenggolf braket løs!",
@@ -420,11 +472,11 @@ export const Highlights: Highlight[] = [
       },
       {
         subtitle: "Kløfta",
-        text: "Fra Kløfta var det dags for Martin, Amanda og rookien XXX. XXX viste ingen tegn til at dette var hans første deltagelse i parterrenggolf og trioen sikret par på andre hull. Tellstrøm fulgte opp med Signe, Matty og Hedda (?), og også de spilte sikkert inn på par. ",
+        text: "Fra Kløfta var det dags for Martin, Amanda og rookien XXX. XXX viste ingen tegn til at dette var hans første deltagelse i parterrenggolf og trioen sikret par på andre hull. Tellstrøm fulgte opp med Signe, Matty og Hedda, og også de spilte sikkert inn på par. Status quo etter Kløfta...",
       },
       {
         subtitle: "Månetoppen",
-        text: "Frikk slår ut for Tellstrøm, mens Tellef er korrigør. Duoen gjør det meget solid og holder Tellstrøm inne i kampen om seieren.",
+        text: "Så var det dags for Frikk og Tellef fra Månetoppen. Frikk slår ut, mens Tellef er korrigør. Duoen gjør det meget solid og holder Tellstrøm inne i kampen om seieren.",
       },
       {
         subtitle: "Amsterdam",
@@ -433,6 +485,10 @@ export const Highlights: Highlight[] = [
       {
         subtitle: "Steinkjer",
         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      },
+      {
+        subtitle: "Oppsummering",
+        text: "Etter at Norrunther sikret seg en solid ledelse allerede fra Kolsåstoppen så det ut til at årets parterrenggolf skulle bli plankekjøring. Men de maktet ikke å øke ledelsen, som gjorde at spenningen til en viss grad var tilstede helt til Steinkjer. Etter at Vegard og Kristin holdt både hodet og svingen kaldt på banens siste hull ble det likevel en relativt komfortabel seier, og med det stiger spenningen i sammendraget i Helgen Games 2025!",
       },
     ],
   },
