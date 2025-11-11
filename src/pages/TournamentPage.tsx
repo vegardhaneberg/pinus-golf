@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   calculateRoundScore,
   type CompleteRoundWithPlayer,
@@ -15,6 +15,8 @@ const TournamentPage: React.FC = () => {
   const roundId = Number(id);
   const [round, setRound] = useState<CompleteRoundWithPlayer>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnPath = searchParams.get("returnPath");
 
   useEffect(() => {
     (async () => {
@@ -24,7 +26,11 @@ const TournamentPage: React.FC = () => {
   }, [roundId]);
 
   const navigateHome = () => {
-    navigate("/");
+    if (returnPath) {
+      navigate(returnPath);
+    } else {
+      navigate("/");
+    }
   };
 
   const navigateToPlayerPage = () => {

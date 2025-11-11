@@ -330,7 +330,11 @@ const PlayerPage: React.FC = () => {
                         <tr
                           key={round.id}
                           className="border-b border-gray-100 hover:bg-gray-50"
-                          onClick={() => navigate(`/tournament/${round.id}`)}
+                          onClick={() =>
+                            navigate(
+                              `/tournament/${round.id}?returnPath=/player/${player?.id}`
+                            )
+                          }
                         >
                           <td className="py-3 px-4 font-semibold text-green-800">
                             {formatDate(round.created_at)}
