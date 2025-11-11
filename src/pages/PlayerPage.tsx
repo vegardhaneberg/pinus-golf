@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getRoundsForPlayer,
@@ -6,9 +6,11 @@ import {
   deletePlayerAndAssets,
   type CompleteRound,
   type Player,
+  formatDate,
+  calculateRoundScoreWithoutPlayerData,
 } from "../supabase/supabaseClient";
 import { calculateHandicap } from "../utils/handicapUtil";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { COURSE } from "../data/course";
 import {
   convertToCommaDecimal,
@@ -23,15 +25,28 @@ const PlayerPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const playerIdFromPath = parseInt(id || "1");
   const isMobile = useIsMobile();
-
+  const [roundDisplayCount, setRoundDisplayCount] = useState<number>(10);
   const [rounds, setRounds] = useState<CompleteRound[]>([]);
   const [playerStatistics, setPlayerStatistics] = useState<
     PlayerStatistics | undefined
   >();
   const [player, setPlayer] = useState<Player | undefined>();
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const years = [2025, 2024, 2023, 2022];
   const navigate = useNavigate();
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const filteredRounds = useMemo(
+    () =>
+      rounds
+        .filter((r) => new Date(r.created_at).getFullYear() === selectedYear)
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ),
+    [rounds, selectedYear]
+  );
 
   useEffect(() => {
     getRoundsForPlayer(playerIdFromPath).then((roundsFromSupaBase) => {
@@ -46,6 +61,11 @@ const PlayerPage: React.FC = () => {
       });
     });
   }, [playerIdFromPath]);
+
+  function handleSelectedYear(e: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectedYear(Number(e.target.value));
+    setRoundDisplayCount(10);
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
@@ -138,7 +158,7 @@ const PlayerPage: React.FC = () => {
                       Hull
                     </th>
                     <th className="text-center py-3 px-4 font-semibold text-gray-800">
-                      Gjennomsnitt
+                      {isMobile ? "Snitt" : "Gjennomsnitt"}
                     </th>
                     <th className="text-center py-3 px-4 font-semibold text-gray-800">
                       Best
@@ -259,8 +279,113 @@ const PlayerPage: React.FC = () => {
             </div>
           </div>
         )}
+
+        {player && rounds.length > 0 && (
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold text-green-800 mb-6">
+              Runder spilt i{" "}
+              <select
+                value={selectedYear}
+                onChange={(e) => handleSelectedYear(e)}
+                className="bg-transparent text-green-800 font-bold underline underline-offset-4 cursor-pointer hover:text-green-900 focus:outline-none"
+              >
+                {years.map((y) => (
+                  <option key={y} value={y} className="text-black">
+                    {y}
+                  </option>
+                ))}
+              </select>
+            </h2>
+            {filteredRounds.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-800">
+                        Dato
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-800">
+                        {isMobile ? "Sum" : "Resultat"}
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-800">
+                        {isMobile ? "1. hull" : "Kolsåstoppen"}
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-800">
+                        {isMobile ? "2. hull" : "Kløfta"}
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-800">
+                        {isMobile ? "3. hull" : "Månetoppen"}
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-800">
+                        {isMobile ? "4. hull" : "Australia"}
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-800">
+                        {isMobile ? "5. hull" : "Steinkjer"}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRounds.slice(0, roundDisplayCount).map((round) => {
+                      return (
+                        <tr
+                          key={round.id}
+                          className="border-b border-gray-100 hover:bg-gray-50"
+                          onClick={() => navigate(`/tournament/${round.id}`)}
+                        >
+                          <td className="py-3 px-4 font-semibold text-green-800">
+                            {formatDate(round.created_at)}
+                          </td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {calculateRoundScoreWithoutPlayerData(round)}
+                          </td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {round.first_hole}
+                          </td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {round.second_hole}
+                          </td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {round.third_hole}
+                          </td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {round.fourth_hole}
+                          </td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {round.fifth_hole}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <div className="flex flex-row gap-2 py-5">
+                  <p>
+                    Viser{" "}
+                    {roundDisplayCount > filteredRounds.length
+                      ? filteredRounds.length
+                      : roundDisplayCount}{" "}
+                    av {filteredRounds.length}{" "}
+                    {filteredRounds.length === 1 ? "runde" : "runder"}
+                  </p>
+                  {filteredRounds.length > roundDisplayCount && (
+                    <Plus
+                      className="w-6 h-6 font-bold bg-green-600 hover:bg-green-700 rounded-md text-white p-1 hover:shadow-xl cursor-pointer"
+                      onClick={() => setRoundDisplayCount((prev) => prev + 10)}
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              <h2>
+                {player?.name.split(" ")[0]} spilte ingen runder i{" "}
+                {selectedYear}
+              </h2>
+            )}
+          </div>
+        )}
       </div>
-      {/* Sticky footer actions */}
+
+      {/* Delete player button */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {player && (
           <div className="mt-4 flex justify-center">
@@ -274,7 +399,7 @@ const PlayerPage: React.FC = () => {
         )}
       </div>
 
-      {/* Delete confirmation modal */}
+      {/* Delete player confirmation modal */}
       {isDeleteOpen && player && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div

@@ -140,7 +140,6 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
                                 setSelectedPlayer(player);
                                 setDropDownOpen(false);
                               }}
-                              // className="block w-full text-left px-4 py-2 text-sm text-green-900 hover:bg-green-200"
                               className={`block w-full text-left px-4 py-2 text-sm text-green-900 hover:bg-green-200 ${
                                 index % 2 === 0 ? "bg-green-50" : "bg-green-100"
                               }`}

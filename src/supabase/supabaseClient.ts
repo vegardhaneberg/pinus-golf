@@ -162,6 +162,18 @@ export function calculateRoundScore(round: CompleteRoundWithPlayer): number {
   );
 }
 
+export function calculateRoundScoreWithoutPlayerData(
+  round: CompleteRound
+): number {
+  return (
+    round.first_hole +
+    round.second_hole +
+    round.third_hole +
+    round.fourth_hole +
+    round.fifth_hole
+  );
+}
+
 export function getFiveBestRounds(
   rounds: CompleteRoundWithPlayer[]
 ): CompleteRoundWithPlayer[] {
@@ -467,7 +479,7 @@ export const Highlights: Highlight[] = [
     blocks: [
       {
         subtitle: "Kolsåstoppen",
-        text: 'Frikk og Vegard startet ballet for lag Tellstrøm. Vegard hadde gått ekstremt høyt ut i forkant av øvelsen og skrytt i både tide og utide om han nylig ervervede "Veien til golf"-kurs. Lite så vi til kurs-skillsa og han bidro sterkt til en svak start med boogey (+1) på første hull for Tellstrøm. Fra lag Norrunther var Vegard og Kristin rolige som skjøra på tunet og spilte inn en solid birdie (-1) fra Kolsåstoppen. Første stikk til Norrunther.',
+        text: 'Frikk og Vegard startet ballet for lag Tellstrøm. Vegard hadde gått ekstremt høyt ut i forkant av øvelsen og skrytt i både tide og utide om han nylig ervervede "Veien til golf"-kurs. Lite så vi til kurs-skillsa og han bidro sterkt til en svak start med boogey (+1) på første hull for Tellstrøm. Fra lag Norrunther var Vegard og Kristin rolige som skjæra på tunet og spilte inn en solid birdie (-1) fra Kolsåstoppen. Første stikk til Norrunther.',
       },
       {
         subtitle: "Kløfta",
@@ -487,7 +499,7 @@ export const Highlights: Highlight[] = [
       },
       {
         subtitle: "Oppsummering",
-        text: "Etter at Norrunther sikret seg en solid ledelse allerede fra Kolsåstoppen så det ut til at årets parterrenggolf skulle bli plankekjøring. Men de maktet ikke å øke ledelsen, som gjorde at spenningen til en viss grad var tilstede helt til Steinkjer. Etter at Vegard og Kristin holdt både hodet og svingen kaldt på banens siste hull ble det likevel en relativt komfortabel seier, og med det stiger spenningen i sammendraget i Helgen Games 2025!",
+        text: "Etter at Norrunther sikret seg en solid ledelse allerede fra Kolsåstoppen så det ut til at årets parterrenggolf skulle bli plankekjøring. Men de maktet ikke å øke ledelsen, som gjorde at spenningen til en viss grad levde helt til Steinkjer. Etter at Vegard og Kristin holdt både hodet og svingen kald på banens siste hull ble det likevel en relativt komfortabel seier, og med det stiger spenningen i sammendraget i Helgen Games 2025!",
       },
     ],
   },
