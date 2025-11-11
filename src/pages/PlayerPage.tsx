@@ -358,7 +358,7 @@ const PlayerPage: React.FC = () => {
                     })}
                   </tbody>
                 </table>
-                <div className="flex flex-row gap-2 py-5">
+                <div className="flex flex-col gap-2 py-5 items-center text-center">
                   <p>
                     Viser{" "}
                     {roundDisplayCount > filteredRounds.length
@@ -368,10 +368,12 @@ const PlayerPage: React.FC = () => {
                     {filteredRounds.length === 1 ? "runde" : "runder"}
                   </p>
                   {filteredRounds.length > roundDisplayCount && (
-                    <Plus
-                      className="w-6 h-6 font-bold bg-green-600 hover:bg-green-700 rounded-md text-white p-1 hover:shadow-xl cursor-pointer"
+                    <button
                       onClick={() => setRoundDisplayCount((prev) => prev + 10)}
-                    />
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      Vis flere
+                    </button>
                   )}
                 </div>
               </div>
