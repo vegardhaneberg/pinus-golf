@@ -10,7 +10,7 @@ import {
   calculateRoundScoreWithoutPlayerData,
 } from "../supabase/supabaseClient";
 import { calculateHandicap } from "../utils/handicapUtil";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { COURSE } from "../data/course";
 import {
   convertToCommaDecimal,
