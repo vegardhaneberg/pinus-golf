@@ -237,6 +237,17 @@ const PlayersPage: React.FC = () => {
           </div>
         )}
       </div>
+      {/* Mobile FAB */}
+      <div className="md:hidden fixed bottom-6 right-6 z-40">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-14 h-14 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-xl flex items-center justify-center transition-colors"
+          aria-label="Legg til spiller"
+        >
+          <Plus className="w-7 h-7" />
+        </button>
+      </div>
+
       {/* Register Player Modal */}
       <RegisterPlayerModal
         isOpen={isModalOpen}

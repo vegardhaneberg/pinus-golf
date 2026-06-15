@@ -15,7 +15,7 @@ export type PlayerInsert = Database["public"]["Tables"]["Player"]["Insert"];
 export type CompleteRoundInsert =
   Database["public"]["Tables"]["CompleteRound"]["Insert"];
 export type CompleteRoundWithPlayer = CompleteRound & {
-  player: Pick<Player, "id" | "name"> | null;
+  player: Pick<Player, "id" | "name" | "image_url"> | null;
 };
 
 export async function getAllPlayers(): Promise<Player[]> {
@@ -97,7 +97,7 @@ export async function getRoundWithPlayerData(
     .select(
       `
       id, created_at, first_hole, second_hole, third_hole, fourth_hole, fifth_hole, player_id,
-      player:player_id ( id, name )
+      player:player_id ( id, name, image_url )
     `
     )
     .eq("id", id)
@@ -119,7 +119,7 @@ export async function getAllRoundsWithPlayerData(): Promise<
     .select(
       `
       id, created_at, first_hole, second_hole, third_hole, fourth_hole, fifth_hole, player_id,
-      player:player_id ( id, name )
+      player:player_id ( id, name, image_url )
     `
     )
     .order("created_at", { ascending: false });

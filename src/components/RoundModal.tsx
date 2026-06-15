@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { X, Plus, ChevronDown } from "lucide-react";
+import { X, Plus, ChevronDown, Check } from "lucide-react";
 import type { Course, RoundAttempt } from "../types/types";
 import { calculateTotal } from "../utils/scoreUtils";
 import {
@@ -114,40 +114,95 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
 
           <form onSubmit={handleSubmit} className="p-6">
             <div className="mb-6">
-              <label
-                htmlFor="playerName"
-                className="block text-lg font-semibold text-gray-700 mb-2"
-              >
+              <label className="block text-lg font-semibold text-gray-700 mb-2">
                 Spiller
               </label>
-              <div className="relative inline-block text-left">
+              <div className="relative">
                 <button
                   type="button"
                   onClick={() => setDropDownOpen((prev) => !prev)}
-                  className="inline-flex w-48 justify-between items-center rounded-lg bg-green-100 px-4 py-2 text-sm font-medium text-green-900 shadow hover:bg-green-200 focus:outline-none"
+                  className="w-full flex items-center justify-between gap-3 rounded-xl border-2 border-green-200 bg-white px-4 py-3 text-left shadow-sm hover:border-green-400 hover:bg-green-50 focus:outline-none focus:border-green-500 transition-colors"
                 >
-                  {selectedPlayer?.name || "Velg spiller"}
-                  <ChevronDown className="ml-2 h-4 w-4" />
+                  {selectedPlayer ? (
+                    <div className="flex items-center gap-3">
+                      {selectedPlayer.image_url ? (
+                        <img
+                          src={selectedPlayer.image_url}
+                          alt={selectedPlayer.name}
+                          className="w-8 h-8 rounded-full object-cover border border-green-200 shrink-0"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                          <span className="text-green-800 font-bold text-sm">
+                            {selectedPlayer.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      <span className="font-semibold text-gray-800">
+                        {selectedPlayer.name}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">Velg spiller...</span>
+                  )}
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200 ${
+                      dropDownOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
+
                 {dropDownOpen && (
-                  <div className="absolute mt-2 w-48 rounded-lg bg-green-100 shadow-lg ring-1 ring-black ring-opacity-5">
-                    <ul className="py-1">
-                      {players &&
-                        players.map((player, index) => (
-                          <li key={player.id}>
-                            <button
-                              onClick={() => {
-                                setSelectedPlayer(player);
-                                setDropDownOpen(false);
-                              }}
-                              className={`block w-full text-left px-4 py-2 text-sm text-green-900 hover:bg-green-200 ${
-                                index % 2 === 0 ? "bg-green-50" : "bg-green-100"
+                  <div className="absolute z-50 mt-2 w-full rounded-xl bg-white shadow-xl border border-gray-100 overflow-hidden">
+                    <ul className="max-h-60 overflow-y-auto py-1">
+                      {players?.map((player) => (
+                        <li key={player.id}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedPlayer(player);
+                              setDropDownOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-green-50 transition-colors ${
+                              selectedPlayer?.id === player.id
+                                ? "bg-green-50"
+                                : ""
+                            }`}
+                          >
+                            {player.image_url ? (
+                              <img
+                                src={player.image_url}
+                                alt={player.name}
+                                className="w-8 h-8 rounded-full object-cover border border-green-200 shrink-0"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                                <span className="text-green-800 font-bold text-sm">
+                                  {player.name.charAt(0)}
+                                </span>
+                              </div>
+                            )}
+                            <span
+                              className={`font-medium flex-1 text-left ${
+                                selectedPlayer?.id === player.id
+                                  ? "text-green-800"
+                                  : "text-gray-700"
                               }`}
                             >
                               {player.name}
-                            </button>
-                          </li>
-                        ))}
+                            </span>
+                            {selectedPlayer?.id === player.id && (
+                              <Check className="w-4 h-4 text-green-600 shrink-0" />
+                            )}
+                          </button>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
@@ -161,24 +216,19 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {course.holes.map((hole, index) => (
                   <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-green-800">
-                        {hole.name}
-                      </span>
-                      <span className="text-sm text-gray-600">
-                        Par {hole.par}
-                      </span>
-                    </div>
+                    <p className="font-medium text-green-800 text-center mb-3">
+                      {hole.name}
+                    </p>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() =>
                           handleScoreChange(index, scores[index] - 1)
                         }
-                        className="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center transition-colors"
+                        className="w-11 h-11 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center text-xl font-bold transition-colors"
                         disabled={scores[index] <= 1}
                       >
-                        -
+                        −
                       </button>
                       <div className="flex-1 text-center">
                         <input
@@ -200,7 +250,7 @@ const RoundModal: React.FC<RoundModalProps> = ({ isOpen, onClose, course }) => {
                         onClick={() =>
                           handleScoreChange(index, scores[index] + 1)
                         }
-                        className="w-8 h-8 bg-green-100 hover:bg-green-200 text-green-600 rounded-full flex items-center justify-center transition-colors"
+                        className="w-11 h-11 bg-green-100 hover:bg-green-200 text-green-600 rounded-full flex items-center justify-center text-xl font-bold transition-colors"
                       >
                         +
                       </button>

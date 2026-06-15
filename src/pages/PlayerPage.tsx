@@ -21,6 +21,20 @@ import {
 } from "../utils/scoreUtils";
 import { useIsMobile } from "../utils/mobileUtil";
 
+const holeScoreClass = (score: number): string => {
+  if (score === 1) return "text-yellow-600 font-bold";
+  if (score === 2) return "text-green-600 font-bold";
+  if (score === 3) return "text-gray-700";
+  if (score === 4) return "text-amber-600 font-bold";
+  return "text-red-600 font-bold";
+};
+
+const totalScoreClass = (score: number): string => {
+  if (score < 15) return "text-green-600";
+  if (score === 15) return "text-blue-600";
+  return "text-red-600";
+};
+
 const PlayerPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const playerIdFromPath = parseInt(id || "1");
@@ -326,10 +340,11 @@ const PlayerPage: React.FC = () => {
                   </thead>
                   <tbody>
                     {filteredRounds.slice(0, roundDisplayCount).map((round) => {
+                      const total = calculateRoundScoreWithoutPlayerData(round);
                       return (
                         <tr
                           key={round.id}
-                          className="border-b border-gray-100 hover:bg-gray-50"
+                          className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                           onClick={() =>
                             navigate(
                               `/tournament/${round.id}?returnPath=/player/${player?.id}`
@@ -339,23 +354,35 @@ const PlayerPage: React.FC = () => {
                           <td className="py-3 px-4 font-semibold text-green-800">
                             {formatDate(round.created_at)}
                           </td>
-                          <td className="py-3 px-4 text-center font-semibold">
-                            {calculateRoundScoreWithoutPlayerData(round)}
+                          <td className="py-3 px-4 text-center">
+                            <span className={`font-bold text-base ${totalScoreClass(total)}`}>
+                              {total}
+                            </span>
                           </td>
-                          <td className="py-3 px-4 text-center font-semibold">
-                            {round.first_hole}
+                          <td className="py-3 px-4 text-center">
+                            <span className={holeScoreClass(round.first_hole)}>
+                              {round.first_hole}
+                            </span>
                           </td>
-                          <td className="py-3 px-4 text-center font-semibold">
-                            {round.second_hole}
+                          <td className="py-3 px-4 text-center">
+                            <span className={holeScoreClass(round.second_hole)}>
+                              {round.second_hole}
+                            </span>
                           </td>
-                          <td className="py-3 px-4 text-center font-semibold">
-                            {round.third_hole}
+                          <td className="py-3 px-4 text-center">
+                            <span className={holeScoreClass(round.third_hole)}>
+                              {round.third_hole}
+                            </span>
                           </td>
-                          <td className="py-3 px-4 text-center font-semibold">
-                            {round.fourth_hole}
+                          <td className="py-3 px-4 text-center">
+                            <span className={holeScoreClass(round.fourth_hole)}>
+                              {round.fourth_hole}
+                            </span>
                           </td>
-                          <td className="py-3 px-4 text-center font-semibold">
-                            {round.fifth_hole}
+                          <td className="py-3 px-4 text-center">
+                            <span className={holeScoreClass(round.fifth_hole)}>
+                              {round.fifth_hole}
+                            </span>
                           </td>
                         </tr>
                       );

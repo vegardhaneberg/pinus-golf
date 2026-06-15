@@ -201,9 +201,9 @@ const HoleStatsPage: React.FC = () => {
                   {bestScore}
                 </div>
                 <div className="text-gray-600 mb-2">Beste resultat</div>
-                <div className="text-sm text-gray-500">
-                  {bestScorers.length} {}
-                  {bestScorers.length > 1 ? " ganger" : " gang"}
+                <div className="text-sm text-gray-500 leading-snug">
+                  {bestScorers.slice(0, 3).map((s) => s.playerName).join(", ")}
+                  {bestScorers.length > 3 ? ` +${bestScorers.length - 3} til` : ""}
                 </div>
               </div>
 
@@ -213,9 +213,9 @@ const HoleStatsPage: React.FC = () => {
                   {worstScore}
                 </div>
                 <div className="text-gray-600 mb-2">Verste resultat</div>
-                <div className="text-sm text-gray-500">
-                  {worstScorers.length}
-                  {worstScorers.length > 1 ? " ganger" : " gang"}
+                <div className="text-sm text-gray-500 leading-snug">
+                  {worstScorers.slice(0, 3).map((s) => s.playerName).join(", ")}
+                  {worstScorers.length > 3 ? ` +${worstScorers.length - 3} til` : ""}
                 </div>
               </div>
               {pars && (

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "../App.css";
-import { BarChart3, MapPin, Menu, Plus, Users } from "lucide-react";
 import {
   calculateRoundScore,
   getAllRoundsWithPlayerData,
@@ -13,6 +12,15 @@ import TopScores from "../components/TopScores";
 import RoundModal from "../components/RoundModal";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "../utils/mobileUtil";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Add01Icon,
+  Book02Icon,
+  GolfBallIcon,
+  GolfBatIcon,
+  Menu01Icon,
+} from "@hugeicons/core-free-icons";
+import { Flag, Award, TrendingUp, Users } from "lucide-react";
 
 const HomePage: React.FC = () => {
   const isMobile = useIsMobile();
@@ -50,7 +58,12 @@ const HomePage: React.FC = () => {
               <div className="cursor-pointer">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
+                    <HugeiconsIcon
+                      icon={GolfBallIcon}
+                      size={30}
+                      color="white"
+                      strokeWidth={1.5}
+                    />
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-green-800">
@@ -65,23 +78,38 @@ const HomePage: React.FC = () => {
               <div className="hidden md:flex items-center gap-3">
                 <button
                   onClick={() => navigate("/players")}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-normal flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
                 >
-                  <Users className="w-5 h-5" />
+                  <HugeiconsIcon
+                    icon={GolfBatIcon}
+                    size={24}
+                    color="white"
+                    strokeWidth={1.5}
+                  />
                   Spillere
                 </button>
                 <button
                   onClick={() => navigate("/highlights")}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-normal flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
                 >
-                  <BarChart3 className="w-5 h-5" />
+                  <HugeiconsIcon
+                    icon={Book02Icon}
+                    size={24}
+                    color="white"
+                    strokeWidth={1.5}
+                  />
                   Høydepunkter
                 </button>
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-normal flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
                 >
-                  <Plus className="w-5 h-5" />
+                  <HugeiconsIcon
+                    icon={Add01Icon}
+                    size={24}
+                    color="white"
+                    strokeWidth={1.5}
+                  />
                   Registrer runde
                 </button>
               </div>
@@ -92,7 +120,12 @@ const HomePage: React.FC = () => {
                   onClick={() => setShowMobileMenu(!showMobileMenu)}
                   className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
                 >
-                  <Menu className="w-5 h-5" />
+                  <HugeiconsIcon
+                    icon={Menu01Icon}
+                    size={24}
+                    color="white"
+                    strokeWidth={1.5}
+                  />
                 </button>
 
                 {/* Mobile Dropdown Menu */}
@@ -105,7 +138,12 @@ const HomePage: React.FC = () => {
                       }}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
                     >
-                      <Users className="w-5 h-5 text-blue-600" />
+                      <HugeiconsIcon
+                        icon={GolfBatIcon}
+                        size={24}
+                        color="black"
+                        strokeWidth={1.5}
+                      />
                       Spillere
                     </button>
                     <button
@@ -115,7 +153,12 @@ const HomePage: React.FC = () => {
                       }}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
                     >
-                      <BarChart3 className="w-5 h-5 text-purple-600" />
+                      <HugeiconsIcon
+                        icon={Book02Icon}
+                        size={24}
+                        color="black"
+                        strokeWidth={1.5}
+                      />
                       Høydepunkter
                     </button>
                     <button
@@ -125,7 +168,12 @@ const HomePage: React.FC = () => {
                       }}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
                     >
-                      <Plus className="w-5 h-5 text-green-600" />
+                      <HugeiconsIcon
+                        icon={Add01Icon}
+                        size={24}
+                        color="black"
+                        strokeWidth={1.5}
+                      />
                       Registrer runde
                     </button>
                   </div>
@@ -152,25 +200,31 @@ const HomePage: React.FC = () => {
               {COURSE.holes.map((hole) => (
                 <div
                   key={hole.number}
-                  className={`bg-green-50 p-4 rounded-lg text-center cursor-pointer hover:bg-green-100 ${
+                  className={`bg-gradient-to-b from-green-50 to-green-100 border border-green-200 p-4 rounded-xl text-center cursor-pointer hover:from-green-100 hover:to-green-200 hover:border-green-300 hover:shadow-md ${
                     isMobile
                       ? ""
-                      : "transition duration-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+                      : "transition-all duration-200 ease-in-out hover:-translate-y-1"
                   }`}
                   onClick={() => navigateToHole(hole.number)}
                 >
-                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">
+                  <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">
+                    {hole.number}
+                  </div>
+                  <div className="text-base sm:text-lg font-bold text-green-800 mb-1">
                     {hole.name}
                   </div>
-                  <div className="text-sm text-green-600">
+                  <div className="text-xs text-green-600 leading-tight">
                     {hole.description}
+                  </div>
+                  <div className="mt-2 text-xs text-green-700 font-medium opacity-75">
+                    Par {hole.par}
                   </div>
                 </div>
               ))}
             </div>
             <div className="mt-4 text-center">
-              <span className="text-lg font-semibold text-green-800">
-                Par {COURSE.holes.reduce((total, hole) => total + hole.par, 0)}
+              <span className="text-sm font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">
+                Total par {COURSE.holes.reduce((total, hole) => total + hole.par, 0)}
               </span>
             </div>
           </div>
@@ -186,13 +240,15 @@ const HomePage: React.FC = () => {
         <footer className="bg-white border-t border-green-200 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div>
+              <div className="flex flex-col items-center gap-1">
+                <Flag className="w-5 h-5 text-green-500 mb-1" />
                 <div className="text-3xl font-bold text-green-800">
                   {completeRounds.length}
                 </div>
-                <div className="text-green-600">Spilte runder</div>
+                <div className="text-sm text-green-600">Spilte runder</div>
               </div>
-              <div>
+              <div className="flex flex-col items-center gap-1">
+                <Award className="w-5 h-5 text-yellow-500 mb-1" />
                 <div className="text-3xl font-bold text-green-800">
                   {completeRounds.length > 0
                     ? Math.min(
@@ -200,9 +256,10 @@ const HomePage: React.FC = () => {
                       )
                     : "-"}
                 </div>
-                <div className="text-green-600">Beste runde</div>
+                <div className="text-sm text-green-600">Beste runde</div>
               </div>
-              <div>
+              <div className="flex flex-col items-center gap-1">
+                <TrendingUp className="w-5 h-5 text-blue-500 mb-1" />
                 <div className="text-3xl font-bold text-green-800">
                   {completeRounds.length > 0
                     ? Math.round(
@@ -213,14 +270,15 @@ const HomePage: React.FC = () => {
                       )
                     : "-"}
                 </div>
-                <div className="text-green-600">Gjennomsnitt slag</div>
+                <div className="text-sm text-green-600">Gjennomsnitt slag</div>
               </div>
-              <div>
+              <div className="flex flex-col items-center gap-1">
+                <Users className="w-5 h-5 text-purple-500 mb-1" />
                 <div className="text-3xl font-bold text-green-800">
                   {completeRounds &&
                     new Set(completeRounds.map((r) => r.player?.id)).size}
                 </div>
-                <div className="text-green-600">Spillere</div>
+                <div className="text-sm text-green-600">Spillere</div>
               </div>
             </div>
           </div>
