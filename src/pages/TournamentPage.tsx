@@ -96,7 +96,7 @@ const TournamentPage: React.FC = () => {
             </div>
 
             {/* Hole-by-hole score grid */}
-            <div className="flex justify-center gap-3 sm:gap-6 mb-8">
+            <div className="flex gap-1 sm:gap-3 mb-8">
               {[
                 { hole: COURSE.holes[0], score: round.first_hole },
                 { hole: COURSE.holes[1], score: round.second_hole },
@@ -105,30 +105,25 @@ const TournamentPage: React.FC = () => {
                 { hole: COURSE.holes[4], score: round.fifth_hole },
               ].map(({ hole, score }) => {
                 const diff = score - hole.par;
-                const bg =
+                const colors =
                   score === 1
-                    ? "bg-yellow-400 text-white"
+                    ? { card: "bg-yellow-50 border-yellow-200", circle: "bg-yellow-400 text-white", badge: "bg-yellow-100 text-yellow-700" }
                     : diff < 0
-                    ? "bg-green-500 text-white"
+                    ? { card: "bg-green-50 border-green-200", circle: "bg-green-500 text-white", badge: "bg-green-100 text-green-700" }
                     : diff === 0
-                    ? "bg-blue-100 text-blue-800"
+                    ? { card: "bg-blue-50 border-blue-200", circle: "bg-blue-500 text-white", badge: "bg-blue-100 text-blue-700" }
                     : diff === 1
-                    ? "bg-amber-400 text-white"
-                    : "bg-red-500 text-white";
+                    ? { card: "bg-amber-50 border-amber-200", circle: "bg-amber-400 text-white", badge: "bg-amber-100 text-amber-700" }
+                    : { card: "bg-red-50 border-red-200", circle: "bg-red-500 text-white", badge: "bg-red-100 text-red-700" };
                 return (
-                  <div key={hole.number} className="flex flex-col items-center gap-1">
-                    <div className="text-xs text-gray-500 font-medium hidden sm:block text-center leading-tight max-w-14">
-                      {hole.name}
-                    </div>
-                    <div className="text-xs text-gray-400 sm:hidden">
+                  <div key={hole.number} className={`flex-1 min-w-0 ${colors.card} border rounded-lg sm:rounded-xl p-1.5 sm:p-3 flex flex-col items-center gap-1 sm:gap-2`}>
+                    <div className="text-[9px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wide whitespace-nowrap">
                       Hull {hole.number}
                     </div>
-                    <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center text-lg font-bold shadow-sm ${bg}`}
-                    >
+                    <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full ${colors.circle} flex items-center justify-center text-sm sm:text-xl font-bold shadow-sm`}>
                       {score}
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className={`text-[9px] sm:text-xs font-semibold px-1 sm:px-1.5 py-0.5 rounded-full ${colors.badge} whitespace-nowrap`}>
                       {diff === 0 ? "Par" : diff > 0 ? `+${diff}` : diff}
                     </div>
                   </div>
