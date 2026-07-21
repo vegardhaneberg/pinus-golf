@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   calculateRoundScore,
   type CompleteRoundWithPlayer,
+  deleteRound,
   formatDate,
   getRoundWithPlayerData,
 } from "../supabase/supabaseClient";
@@ -17,6 +18,9 @@ const TournamentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnPath = searchParams.get("returnPath");
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -132,6 +136,72 @@ const TournamentPage: React.FC = () => {
             </div>
 
             <RoundChart par={3} round={round} />
+          </div>
+
+          {/* Delete round button */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => setIsDeleteOpen(true)}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+            >
+              Slett runde
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete round confirmation modal */}
+      {isDeleteOpen && round && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => {
+              if (isDeleting) return;
+              setIsDeleteOpen(false);
+              setDeleteError(null);
+            }}
+          />
+          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              Bekreft sletting
+            </h3>
+            <p className="text-gray-700 mb-6">
+              Er du sikker på at du vil slette denne runden? Dette kan ikke
+              angres.
+            </p>
+            {deleteError && (
+              <p className="text-red-600 text-sm mb-4">{deleteError}</p>
+            )}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setIsDeleteOpen(false);
+                  setDeleteError(null);
+                }}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+              >
+                Avbryt
+              </button>
+              <button
+                onClick={async () => {
+                  setIsDeleting(true);
+                  setDeleteError(null);
+                  const ok = await deleteRound(round.id);
+                  setIsDeleting(false);
+                  if (ok) {
+                    setIsDeleteOpen(false);
+                    navigateHome();
+                  } else {
+                    setDeleteError("Kunne ikke slette runden, prøv igjen");
+                  }
+                }}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold disabled:opacity-60"
+              >
+                {isDeleting ? "Sletter..." : "Slett"}
+              </button>
+            </div>
           </div>
         </div>
       )}

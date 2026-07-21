@@ -363,6 +363,20 @@ export const deletePlayerAndAssets = async (
   return true;
 };
 
+export const deleteRound = async (roundId: number): Promise<boolean> => {
+  const { error } = await supabase
+    .from("CompleteRound")
+    .delete()
+    .eq("id", roundId);
+
+  if (error) {
+    console.error("Failed to delete round:", error.message);
+    return false;
+  }
+
+  return true;
+};
+
 export interface Highlight {
   id: number;
   title: string;
