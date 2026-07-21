@@ -15,7 +15,7 @@ import { useIsMobile } from "../utils/mobileUtil";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Add01Icon,
-  Book02Icon,
+  // Book02Icon, // unused while "Høydepunkter" nav item is hidden
   GolfBallIcon,
   GolfBatIcon,
   Menu01Icon,
@@ -88,7 +88,7 @@ const HomePage: React.FC = () => {
                   />
                   Spillere
                 </button>
-                <button
+                {/* <button
                   onClick={() => navigate("/highlights")}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-normal flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
                 >
@@ -99,7 +99,7 @@ const HomePage: React.FC = () => {
                     strokeWidth={1.5}
                   />
                   Høydepunkter
-                </button>
+                </button> */}
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-normal flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
@@ -146,7 +146,7 @@ const HomePage: React.FC = () => {
                       />
                       Spillere
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => {
                         navigate("/highlights");
                         setShowMobileMenu(false);
@@ -160,7 +160,7 @@ const HomePage: React.FC = () => {
                         strokeWidth={1.5}
                       />
                       Høydepunkter
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => {
                         setIsModalOpen(true);
