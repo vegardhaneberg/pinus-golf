@@ -1,6 +1,7 @@
 import type { CompleteRound } from "../supabase/supabaseClient";
 import type { HoleScore } from "../types/types";
 import { calculateHandicap } from "./handicapUtil";
+import { COURSE } from "../data/course";
 
 export const calculateTotal = (scores: number[]): number => {
   return scores.reduce((accumulator, current) => accumulator + current, 0);
@@ -183,11 +184,11 @@ const calculateHolePercentages = (rounds: CompleteRound[]): number[] => {
   const counts = [0, 0, 0, 0, 0];
 
   for (const round of rounds) {
-    if (round.first_hole <= 3) counts[0]++;
-    if (round.second_hole <= 3) counts[1]++;
-    if (round.third_hole <= 3) counts[2]++;
-    if (round.fourth_hole <= 3) counts[3]++;
-    if (round.fifth_hole <= 3) counts[4]++;
+    if (round.first_hole <= COURSE.holes[0].par) counts[0]++;
+    if (round.second_hole <= COURSE.holes[1].par) counts[1]++;
+    if (round.third_hole <= COURSE.holes[2].par) counts[2]++;
+    if (round.fourth_hole <= COURSE.holes[3].par) counts[3]++;
+    if (round.fifth_hole <= COURSE.holes[4].par) counts[4]++;
   }
 
   return counts.map((count) => Math.round((count / rounds.length) * 100));

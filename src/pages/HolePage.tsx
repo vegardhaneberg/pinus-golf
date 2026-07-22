@@ -90,7 +90,7 @@ const HoleStatsPage: React.FC = () => {
   const par = newGetHoleInfo(holeIdFromPath).par;
   const averageRelativeToPar = parseFloat(averageScore) - par;
   const holeInOnes = holeScores?.filter((s) => s.score === 1);
-  const pars = holeScores?.filter((s) => s.score === par);
+  const parOrBetter = holeScores?.filter((s) => s.score <= par);
 
   // Best and worst scores
   const bestScore = totalScores ? Math.min(...totalScores) : 999;
@@ -218,15 +218,15 @@ const HoleStatsPage: React.FC = () => {
                   {worstScorers.length > 3 ? ` +${worstScorers.length - 3} til` : ""}
                 </div>
               </div>
-              {pars && (
+              {parOrBetter && (
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <Users className="w-8 h-8 text-purple-600 mx-auto mb-3" />
                   <div className="text-3xl font-bold text-gray-800 mb-1">
-                    {((pars.length / totalScores.length) * 100).toFixed(0)}%
+                    {((parOrBetter.length / totalScores.length) * 100).toFixed(0)}%
                   </div>
                   <div className="text-gray-600 mb-2">Par Rate</div>
                   <div className="text-sm text-gray-500">
-                    {pars.length} av {totalScores.length} spilte runder
+                    {parOrBetter.length} av {totalScores.length} spilte runder
                   </div>
                 </div>
               )}
