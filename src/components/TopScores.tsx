@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { formatScoreRelativeToPar } from "../utils/scoreUtils";
 import {
   calculateRoundScore,
   formatDate,
+  getAvailableYears,
+  getBestRoundsForYear,
   type CompleteRoundWithPlayer,
 } from "../supabase/supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +34,15 @@ const rankCardStyle = (rank: number): string => {
 
 const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
   const navigate = useNavigate();
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
+
+  const availableYears = useMemo(() => getAvailableYears(rounds), [rounds]);
+  const bestRoundsForYear = useMemo(
+    () => getBestRoundsForYear(rounds, selectedYear),
+    [rounds, selectedYear]
+  );
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -77,17 +88,33 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center gap-2">
+      <h2 className="text-2xl font-bold text-green-800 mb-4 flex items-center gap-2">
         <HugeiconsIcon
           icon={ChampionIcon}
           size={24}
           color="#16a34a"
           strokeWidth={1.5}
         />
-        Gjennom tidene
+        Årsbeste {selectedYear}
       </h2>
 
-      {rounds.length === 0 ? (
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
+        {availableYears.map((year) => (
+          <button
+            key={year}
+            onClick={() => setSelectedYear(year)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+              year === selectedYear
+                ? "bg-green-600 text-white"
+                : "bg-green-50 text-green-800 hover:bg-green-100"
+            }`}
+          >
+            {year}
+          </button>
+        ))}
+      </div>
+
+      {bestRoundsForYear.length === 0 ? (
         <div className="text-center py-8 text-gray-400">
           <HugeiconsIcon
             icon={ChampionIcon}
@@ -95,11 +122,11 @@ const TopScores: React.FC<TopScoresProps> = ({ rounds }) => {
             color="#9ca3af"
             strokeWidth={1.5}
           />
-          <p className="mt-2">Fant ingen resultater</p>
+          <p className="mt-2">Ingen resultater i {selectedYear} ennå</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {rounds.map((round, index) => {
+          {bestRoundsForYear.map((round, index) => {
             const rank = index + 1;
             const score = calculateRoundScore(round);
             const diff = score - PAR;

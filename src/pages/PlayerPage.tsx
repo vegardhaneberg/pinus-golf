@@ -4,6 +4,7 @@ import {
   getRoundsForPlayer,
   getPlayer,
   deletePlayerAndAssets,
+  getAvailableYears,
   type CompleteRound,
   type Player,
   formatDate,
@@ -45,11 +46,14 @@ const PlayerPage: React.FC = () => {
     PlayerStatistics | undefined
   >();
   const [player, setPlayer] = useState<Player | undefined>();
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
-  const years = [2025, 2024, 2023, 2022];
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
   const navigate = useNavigate();
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const years = useMemo(() => getAvailableYears(rounds), [rounds]);
 
   const filteredRounds = useMemo(
     () =>

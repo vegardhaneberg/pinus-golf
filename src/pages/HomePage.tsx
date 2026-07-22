@@ -3,7 +3,6 @@ import "../App.css";
 import {
   calculateRoundScore,
   getAllRoundsWithPlayerData,
-  getFiveBestRounds,
   type CompleteRoundWithPlayer,
 } from "../supabase/supabaseClient";
 import { COURSE } from "../data/course";
@@ -232,7 +231,7 @@ const HomePage: React.FC = () => {
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <RecentResults rounds={completeRounds.slice(0, 5)} />
-            <TopScores rounds={getFiveBestRounds(completeRounds)} />
+            <TopScores rounds={completeRounds} />
           </div>
         </div>
 

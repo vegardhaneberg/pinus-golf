@@ -182,6 +182,24 @@ export function getFiveBestRounds(
     .slice(0, 5);
 }
 
+export function getAvailableYears(rounds: { created_at: string }[]): number[] {
+  const currentYear = new Date().getFullYear();
+  const years = new Set<number>(
+    rounds.map((round) => new Date(round.created_at).getFullYear())
+  );
+  years.add(currentYear);
+  return Array.from(years).sort((a, b) => b - a);
+}
+
+export function getBestRoundsForYear(
+  rounds: CompleteRoundWithPlayer[],
+  year: number
+): CompleteRoundWithPlayer[] {
+  return getFiveBestRounds(
+    rounds.filter((round) => new Date(round.created_at).getFullYear() === year)
+  );
+}
+
 export async function savePlayer(
   name: string,
   imageUrl: string
