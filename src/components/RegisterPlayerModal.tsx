@@ -4,7 +4,7 @@ import { X, Plus, Upload, User } from "lucide-react";
 interface RegisterPlayerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (playerName: string, image: File | null) => void;
+  onSubmit: (playerName: string, image: File | null) => Promise<boolean>;
 }
 
 const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
@@ -16,6 +16,8 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,7 +32,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!playerName.trim()) return;
     if (!selectedImage) {
@@ -38,7 +40,15 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
       return;
     }
 
-    onSubmit(playerName.trim(), selectedImage);
+    setSubmitError(null);
+    setIsSubmitting(true);
+    const success = await onSubmit(playerName.trim(), selectedImage);
+    setIsSubmitting(false);
+
+    if (!success) {
+      setSubmitError("Kunne ikke registrere spilleren, prøv igjen");
+      return;
+    }
 
     // Reset form
     setPlayerName("");
@@ -53,6 +63,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
     setSelectedImage(null);
     setImagePreview(null);
     setImageError(null);
+    setSubmitError(null);
     onClose();
   };
 
@@ -137,20 +148,26 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
             </div>
           </div>
 
+          {submitError && (
+            <p className="text-sm text-red-600 mb-4">{submitError}</p>
+          )}
+
           <div className="flex gap-3">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              disabled={isSubmitting}
+              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50"
             >
               Avbryt
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+              disabled={isSubmitting}
+              className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Plus className="w-5 h-5" />
-              Registrer spiller
+              {isSubmitting ? "Registrerer..." : "Registrer spiller"}
             </button>
           </div>
         </form>

@@ -60,10 +60,10 @@ const PlayersPage: React.FC = () => {
   const handleRegisterPlayer = async (
     playerName: string,
     image: File | null
-  ) => {
+  ): Promise<boolean> => {
     if (!image) {
       console.error("Image is required to register a player");
-      return;
+      return false;
     }
 
     try {
@@ -74,13 +74,15 @@ const PlayersPage: React.FC = () => {
 
       if (!savedPlayer) {
         console.error("Failed to save player after image upload");
-        return;
+        return false;
       }
 
       const updatedPlayers = await getAllPlayers();
       setPlayers(updatedPlayers);
+      return true;
     } catch (error) {
       console.error("Failed to register player:", error);
+      return false;
     }
   };
 
