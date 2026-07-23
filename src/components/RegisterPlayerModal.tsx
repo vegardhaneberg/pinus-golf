@@ -19,9 +19,18 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const MAX_IMAGE_BYTES = 1024 * 1024;
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > MAX_IMAGE_BYTES) {
+        setImageError("Bildet er for stort. Maks tillatt størrelse er 1MB");
+        setSelectedImage(null);
+        setImagePreview(null);
+        e.target.value = "";
+        return;
+      }
       setSelectedImage(file);
       const reader = new FileReader();
       reader.onload = (e) => {
