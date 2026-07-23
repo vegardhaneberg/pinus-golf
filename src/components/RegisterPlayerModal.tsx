@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { X, Plus, Upload, User } from "lucide-react";
+import { compressImage } from "../utils/imageUtils";
 
 interface RegisterPlayerModalProps {
   isOpen: boolean;
@@ -18,26 +19,40 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
   const [imageError, setImageError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCompressingImage, setIsCompressingImage] = useState(false);
 
-  const MAX_IMAGE_BYTES = 1024 * 1024;
+  // Safety net after compression — a resized/re-encoded profile photo should
+  // never come close to this, but guards against pathological inputs.
+  const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > MAX_IMAGE_BYTES) {
-        setImageError("Bildet er for stort. Maks tillatt størrelse er 1MB");
+    if (!file) return;
+
+    setImageError(null);
+    setIsCompressingImage(true);
+    try {
+      const compressed = await compressImage(file);
+      if (compressed.size > MAX_IMAGE_BYTES) {
+        setImageError("Bildet er for stort, prøv et annet bilde");
         setSelectedImage(null);
         setImagePreview(null);
-        e.target.value = "";
         return;
       }
-      setSelectedImage(file);
+
+      setSelectedImage(compressed);
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string);
       };
-      reader.readAsDataURL(file);
-      setImageError(null);
+      reader.readAsDataURL(compressed);
+    } catch {
+      setImageError("Kunne ikke lese bildet, prøv et annet bilde");
+      setSelectedImage(null);
+      setImagePreview(null);
+    } finally {
+      setIsCompressingImage(false);
+      e.target.value = "";
     }
   };
 
@@ -136,20 +151,24 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
                 </div>
               )}
 
-              <label className="cursor-pointer bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+              <label
+                className={`cursor-pointer bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                  isCompressingImage ? "opacity-50 pointer-events-none" : ""
+                }`}
+              >
                 <Upload className="w-4 h-4" />
-                Velg bilde
+                {isCompressingImage ? "Behandler bilde..." : "Velg bilde"}
                 <input
                   type="file"
                   id="playerImage"
                   accept="image/*"
                   onChange={handleImageChange}
+                  disabled={isCompressingImage}
                   className="hidden"
-                  required
                 />
               </label>
               <p className="text-xs text-gray-500 mt-2">
-                JPG eller PNG (maks 1MB)
+                JPG eller PNG — bildet komprimeres automatisk
               </p>
               {imageError && (
                 <p className="text-sm text-red-600 mt-2">{imageError}</p>
@@ -172,7 +191,7 @@ const RegisterPlayerModal: React.FC<RegisterPlayerModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isCompressingImage}
               className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Plus className="w-5 h-5" />
